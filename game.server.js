@@ -15,7 +15,7 @@
         verbose     = true;
 
     game_server.setUser = function(sId, playerName) {
-        console.log("begin set user with mongourl: " + mongourl);
+        console.log("begin set user");
         players[playerName] = {status: 1, socketId : sId};
         onUserConnect(sId, playerName);
     };
