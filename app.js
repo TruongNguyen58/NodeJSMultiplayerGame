@@ -107,6 +107,9 @@ io.sockets.on('connection', function(socket) {
      else if(obj.type == "onlinePlayers") {
       game_server.getAvailablePlayers(socket.id);
     }
+    else if(obj.type == "invite") {
+      game_server.inviteToGame(msg);
+    }
     // Is this an existing user name?
     
   });
