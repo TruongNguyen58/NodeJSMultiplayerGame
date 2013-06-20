@@ -2,50 +2,35 @@
     BH Licensed.
 */
 
-// var mongo;
-// if(process.env.VCAP_SERVICES){
-//     var env = JSON.parse(process.env.VCAP_SERVICES);
-//     mongo = env['mongodb-1.8'][0]['credentials'];
-// }
-// else{
-//     mongo = {
-//         "hostname":"localhost",
-//         "port":27017,
-//         "username":"",
-//         "password":"",
-//         "name":"",
-//         "db":"mydb"
-//     }
-// }
+var mongo;
+if(process.env.VCAP_SERVICES){
+    var env = JSON.parse(process.env.VCAP_SERVICES);
+    mongo = env['mongodb-1.8'][0]['credentials'];
+}
+else{
+    mongo = {
+        "hostname":"ec2-54-224-112-94.compute-1.amazonaws.com",
+        "port":27017,
+        "username":"",
+        "password":"",
+        "name":"",
+        "db":"mydb"
+    }
+}
 
-var config = { 
-  "USER"    : "",
-  "PASS"    : "",
-  "HOST"    : "ec2-23-22-32-11.compute-1.amazonaws.com",
-  "PORT"    : "27017",
-  "DATABASE" : "mydb"
-};
+var generate_mongo_url = function(obj){
+    obj.hostname = (obj.hostname || 'ec2-54-224-112-94.compute-1.amazonaws.com');
+    obj.port = (obj.port || 27017);
+    obj.db = (obj.db || 'test');
+    if(obj.username && obj.password){
+        return "mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db;
+    }
+    else{
+        return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db;
+    }
+}
 
-var mongourl  = "mongodb://"+config.USER + ":"+
-     config.PASS + "@"+
-     config.HOST + ":"+
-     config.PORT + "/"+
-    config.DATABASE;
-
-
-// var generate_mongo_url = function(obj){
-//     obj.hostname = (obj.hostname || 'localhost');
-//     obj.port = (obj.port || 27017);
-//     obj.db = (obj.db || 'test');
-//     if(obj.username && obj.password){
-//         return "mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db;
-//     }
-//     else{
-//         return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db;
-//     }
-// }
-
-    // var mongourl = dbPath;
+    var mongourl = generate_mongo_url(mongo);
     var recordIntervals = {};
     var numberOfPlayerAnswer = {};
     var gameRounds = {};
@@ -61,7 +46,7 @@ var mongourl  = "mongodb://"+config.USER + ":"+
         verbose     = true;
 
     game_server.setUser = function(sId, playerName) {
-        console.log("begin set user");
+        console.log("begin set user with mongourl: " + mongourl);
         db.connect(mongourl, function(err, conn){
           conn.collection('player', function(err, coll){
             coll.save({_id: playerName, status: 1, socketId : sId}, function(err, saved) {
@@ -146,7 +131,6 @@ var mongourl  = "mongodb://"+config.USER + ":"+
         var obj = JSON.parse(msg);
         var dataToSend = {};
         console.log('looking for a game for user: ' + obj.creatorId);
-        console.log('');
         db.connect(mongourl, function(err, conn){
           conn.collection('player' , function(err, coll){
             coll.find({status: 1} ,function(err, cursor){
