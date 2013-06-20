@@ -2,35 +2,50 @@
     BH Licensed.
 */
 
-var mongo;
-if(process.env.VCAP_SERVICES){
-    var env = JSON.parse(process.env.VCAP_SERVICES);
-    mongo = env['mongodb-1.8'][0]['credentials'];
-}
-else{
-    mongo = {
-        "hostname":"localhost",
-        "port":27017,
-        "username":"",
-        "password":"",
-        "name":"",
-        "db":"mydb"
-    }
-}
+// var mongo;
+// if(process.env.VCAP_SERVICES){
+//     var env = JSON.parse(process.env.VCAP_SERVICES);
+//     mongo = env['mongodb-1.8'][0]['credentials'];
+// }
+// else{
+//     mongo = {
+//         "hostname":"localhost",
+//         "port":27017,
+//         "username":"",
+//         "password":"",
+//         "name":"",
+//         "db":"mydb"
+//     }
+// }
 
-var generate_mongo_url = function(obj){
-    obj.hostname = (obj.hostname || 'localhost');
-    obj.port = (obj.port || 27017);
-    obj.db = (obj.db || 'test');
-    if(obj.username && obj.password){
-        return "mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db;
-    }
-    else{
-        return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db;
-    }
-}
+var config = { 
+  "USER"    : "",
+  "PASS"    : "",
+  "HOST"    : "ec2-23-22-32-11.compute-1.amazonaws.com",
+  "PORT"    : "27017",
+  "DATABASE" : "mydb"
+};
 
-    var mongourl = generate_mongo_url(mongo);
+var mongourl  = "mongodb://"+config.USER + ":"+
+     config.PASS + "@"+
+     config.HOST + ":"+
+     config.PORT + "/"+
+    config.DATABASE;
+
+
+// var generate_mongo_url = function(obj){
+//     obj.hostname = (obj.hostname || 'localhost');
+//     obj.port = (obj.port || 27017);
+//     obj.db = (obj.db || 'test');
+//     if(obj.username && obj.password){
+//         return "mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db;
+//     }
+//     else{
+//         return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db;
+//     }
+// }
+
+    // var mongourl = dbPath;
     var recordIntervals = {};
     var numberOfPlayerAnswer = {};
     var gameRounds = {};
@@ -44,6 +59,7 @@ var generate_mongo_url = function(obj){
         db = require('mongodb'),
         ObjectID = db.ObjectID,
         verbose     = true;
+
     game_server.setUser = function(sId, playerName) {
         console.log("begin set user");
         db.connect(mongourl, function(err, conn){
@@ -59,40 +75,25 @@ var generate_mongo_url = function(obj){
 
     function onUserConnect(sId, playerName) {
       var i =0;
-      console.log(i++  + "xxxxxxxxxxx");
       console.log("User: " +playerName  + " connected with socketID: " + sId);
-      console.log(i++  + "xxxxxxxxxxx");
       // Does not exist ... so, proceed
       clients[playerName] = sId;
-      console.log(i++  + "xxxxxxxxxxx");
       socketsOfClients[sId] = playerName;
-      console.log(i++  + "xxxxxxxxxxx");
       console.log("clients: " +JSON.stringify(clients));
-      console.log(i++  + "xxxxxxxxxxx");
       console.log("socketsOfClients: " +JSON.stringify(socketsOfClients));
-      console.log(i++  + "xxxxxxxxxxx");
       if(currentGameOfPlayer[playerName] != undefined) {
-        console.log(i++  + "xxxxxxxxxxx");
         try{
-          console.log(i++  + "xxxxxxxxxxx");
           var dataToSend = {};
-          console.log(i++  + "xxxxxxxxxxx");
           dataToSend.notice = "playerReconnect"
-          console.log(i++  + "xxxxxxxxxxx");
           var data = {};
             data.player = playerName;
             dataToSend.data = data;
-          console.log(i++  + "xxxxxxxxxxx");
           games[currentGameOfPlayer[playerName]]. playerIds.forEach(function(playerId){
-            console.log(i++  + "xxxxxxxxxxx");
            if(playerId != playerName) {
-            console.log(i++  + "xxxxxxxxxxx");
             app_server.sendMsgToClient(clients[playerId], dataToSend);
             }
           });
-          console.log(i++  + "xxxxxxxxxxx");
           recordIntervals[currentGameOfPlayer[playerName]] = startIntervalTimer(games[currentGameOfPlayer[playerName]], 10,currentGameOfPlayer[playerName]);
-          console.log(i++  + "xxxxxxxxxxx");
         }
         catch (err) {
           console.log("ERORR: " + JSON.stringify(err));
@@ -145,10 +146,12 @@ var generate_mongo_url = function(obj){
         var obj = JSON.parse(msg);
         var dataToSend = {};
         console.log('looking for a game for user: ' + obj.creatorId);
+        console.log('');
         db.connect(mongourl, function(err, conn){
           conn.collection('player' , function(err, coll){
             coll.find({status: 1} ,function(err, cursor){
               cursor.toArray(function (err, users) {
+
                 if(users.length > 1) {
                   dataToSend.notice = "invite";
                   dataToSend.data = obj;
