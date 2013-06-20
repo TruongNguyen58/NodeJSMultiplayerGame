@@ -145,7 +145,6 @@
       var dataToSend = {};
       numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
       console.log(_id + " --- " + obj.cardId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
-      var o_id = new ObjectID(_id);
       console.log("Found game: " +JSON.stringify(games[_id]));
       games[_id].playerIds.forEach(function(playerId){
         if(playerId != obj.playerAnswer){
