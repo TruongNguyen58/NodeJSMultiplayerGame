@@ -96,7 +96,7 @@
       });
       console.log('Sending availableUsers to ' + sId);
 
-      var dataToSend  = {"type": TYPE_ONLINE_PLAYERS, "data":{"availablePlayers":availableUsers}};
+      var dataToSend  = {"notice": TYPE_ONLINE_PLAYERS, "data":{"availablePlayers":availableUsers}};
       app_server.sendMsgToClient(sId, dataToSend);
     }; //game_server.getAvailablePlayers
 
