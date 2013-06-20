@@ -82,10 +82,10 @@
         for (var playerName in players) {
           console.log(JSON.stringify(playerName));
            if (players.hasOwnProperty(playerName)) {
-             if(playerName != obj.creatorId && playerName.status ==1) {
+             if(playerName != obj.creatorId && players[playerName].status ==1) {
                 dataToSend.notice = "invite";
                 dataToSend.data = obj;
-                console.log('found user: ' + JSON.stringify(user.socketId));
+                console.log('found user: ' + JSON.stringify(playerName));
                 app_server.sendMsgToClient(players[playerName].socketId, dataToSend);
                 break;
              }
