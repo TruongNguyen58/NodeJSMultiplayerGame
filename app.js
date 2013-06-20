@@ -99,7 +99,7 @@ io.sockets.on('connection', function(socket) {
       game_server.confirmJoinGame(msg);
     }
     else if(obj.type == "onStart") {
-      game_server.onStart(msg);
+      game_server.onStart(socket.id, msg);
     }
      else if(obj.type == "playerAnswer") {
       game_server.onPlayerAnswer(msg);

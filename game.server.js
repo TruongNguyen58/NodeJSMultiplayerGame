@@ -1,61 +1,23 @@
 /*  Copyright (c) 2013 TruongNGUYEN
     BH Licensed.
 */
-
-var mongo;
-if(process.env.VCAP_SERVICES){
-    var env = JSON.parse(process.env.VCAP_SERVICES);
-    mongo = env['mongodb-1.8'][0]['credentials'];
-}
-else{
-    mongo = {
-        "hostname":"ec2-54-224-112-94.compute-1.amazonaws.com",
-        "port":27017,
-        "username":"",
-        "password":"",
-        "name":"",
-        "db":"mydb"
-    }
-}
-
-var generate_mongo_url = function(obj){
-    obj.hostname = (obj.hostname || 'ec2-54-224-112-94.compute-1.amazonaws.com');
-    obj.port = (obj.port || 27017);
-    obj.db = (obj.db || 'test');
-    if(obj.username && obj.password){
-        return "mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db;
-    }
-    else{
-        return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db;
-    }
-}
-
-    var mongourl = generate_mongo_url(mongo);
     var recordIntervals = {};
     var numberOfPlayerAnswer = {};
     var gameRounds = {};
     var clients = {};
     var socketsOfClients = {};
     var games = {};
+    var players = {};
     var currentGameOfPlayer = {};
     var
         game_server = module.exports,
         app_server = require('./app.js'),
-        db = require('mongodb'),
-        ObjectID = db.ObjectID,
         verbose     = true;
 
     game_server.setUser = function(sId, playerName) {
         console.log("begin set user with mongourl: " + mongourl);
-        db.connect(mongourl, function(err, conn){
-          conn.collection('player', function(err, coll){
-            coll.save({_id: playerName, status: 1, socketId : sId}, function(err, saved) {
-                if( err || !saved ) console.log("User not saved");
-                else console.log("User saved");
-                onUserConnect(sId, playerName);
-             });
-          });
-        });
+        players[playerName] = {status: 1, socketId : sId};
+        onUserConnect(sId, playerName);
     };
 
     function onUserConnect(sId, playerName) {
@@ -88,39 +50,25 @@ var generate_mongo_url = function(obj){
 
     game_server.onUserDisconnect = function(sId) {
        console.log("begin onUserDisconnect");
-       
       try{
-         
         if(socketsOfClients[sId] != undefined) {
-          
           if(currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
-            
             var gameId = currentGameOfPlayer[socketsOfClients[sId]];
-            
             var dataToSend = {};
-            
             dataToSend.notice = "playerDisconnect"
-            
             var data = {};
             data.player = socketsOfClients[sId];
             dataToSend.data = data;
-            
             games[gameId]. playerIds.forEach(function(playerId){
-              
               if(playerId != socketsOfClients[sId]) {
-                
                 app_server.sendMsgToClient(clients[playerId], dataToSend);
               }
-
             });
-            
             clearInterval(recordIntervals[gameId]);
             }
           }
-          
           delete socketsOfClients[sId];
           console.log("socketsOfClients: " +JSON.stringify(socketsOfClients));
-          
         }
       catch (err) {
         console.log("ERORR onUserDisconnect: " + JSON.stringify(err));
@@ -131,27 +79,17 @@ var generate_mongo_url = function(obj){
         var obj = JSON.parse(msg);
         var dataToSend = {};
         console.log('looking for a game for user: ' + obj.creatorId);
-        db.connect(mongourl, function(err, conn){
-          conn.collection('player' , function(err, coll){
-            coll.find({status: 1} ,function(err, cursor){
-              cursor.toArray(function (err, users) {
-
-                if(users.length > 1) {
-                  dataToSend.notice = "invite";
-                  dataToSend.data = obj;
-                  for(var i = 0;i<users.length;i++) {
-                     var user = users[i];
-                     if(user._id != obj.creatorId) {
-                         console.log('found user: ' + JSON.stringify(user.socketId));
-                         app_server.sendMsgToClient(user.socketId, dataToSend);
-                         break;
-                     }
-                   }
-                }
-              });
-          });  
-        });
-      }); 
+        for (var playerName in players) {
+           if (players.hasOwnProperty(playerName)) {
+             if(playerName != obj.creatorId && playerName.status ==1) {
+                dataToSend.notice = "invite";
+                dataToSend.data = obj;
+                console.log('found user: ' + JSON.stringify(user.socketId));
+                app_server.sendMsgToClient(players[playerName].socketId, dataToSend);
+                break;
+             }
+           }
+        }
     }; //game_server.findGame
 
     game_server.confirmJoinGame = function(msg) {
@@ -164,47 +102,37 @@ var generate_mongo_url = function(obj){
         app_server.sendMsgToClient(clients[obj.creatorId], dataToSend);
     }; //game_server.confirmJoinGame
 
-    // db.game.remove();
-     game_server.onStart = function(msg) {
+     game_server.onStart = function(_id, msg) {
         var obj = JSON.parse(msg);
         var gameToSave = JSON.parse(obj.game);
         var dataToSend = {};
-        db.connect(mongourl, function(err, conn){
-          conn.collection('game' , function(err, coll){
-            coll.insert(gameToSave, function(err, saved) {
-              if( err || !saved ) console.log("game not saved");
-              else console.log("game saved with _id: "  + JSON.stringify(saved));
-              obj.game = saved;
-              dataToSend.notice = "startGame";
-              dataToSend.data = obj;
-               var playerIds = gameToSave.playerIds;
-               var roundNum = gameToSave.roundNum;
-               console.log(gameToSave +"---"+playerIds);
-               // var sockets = new Array();
-               try{
-                var i=0;
-                playerIds.forEach(function(playerId){
-                  currentGameOfPlayer[playerId] = saved[0]._id;
-                  app_server.sendMsgToClient(clients[playerId], dataToSend);
-                });
-               }
-               catch(err) {
-                 console.log("Err: " +JSON.stringify(err));
-               }
-
-               var _id = saved[0]._id;
-               games[_id] = saved[0];
-               console.log("Id after save: " + _id);
-               // gameSockets[_id] = sockets;
-               gameRounds[_id] = roundNum;
-               console.log("GameRound: " + JSON.stringify(gameRounds));
-               numberOfPlayerAnswer[_id] = 0;
-               setTimeout(function() {
-                 recordIntervals[_id] = startIntervalTimer(games[_id], 10,_id);
-                }, 1*1000);
-            });
+        console.log("Id after save: " + _id);
+        games[_id] = gameToSave;
+        console.log("game saved with: "  + JSON.stringify(gameToSave));
+        dataToSend.notice = "startGame";
+        dataToSend.data = obj;
+         var playerIds = gameToSave.playerIds;
+         var roundNum = gameToSave.roundNum;
+         console.log(gameToSave +"---"+playerIds);
+         // var sockets = new Array();
+         try{
+          var i=0;
+          playerIds.forEach(function(playerId){
+            currentGameOfPlayer[playerId] = _id;
+            app_server.sendMsgToClient(clients[playerId], dataToSend);
           });
-        });
+         }
+         catch(err) {
+           console.log("Err: " +JSON.stringify(err));
+         }
+        
+         // gameSockets[_id] = sockets;
+         gameRounds[_id] = roundNum;
+         console.log("GameRound: " + JSON.stringify(gameRounds));
+         numberOfPlayerAnswer[_id] = 0;
+         setTimeout(function() {
+           recordIntervals[_id] = startIntervalTimer(games[_id], 10,_id);
+          }, 1*1000);
     }; //game_server.confirmJoinGame
 
     game_server.onPlayerAnswer = function(msg) {
