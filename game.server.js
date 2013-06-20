@@ -1,6 +1,18 @@
 /*  Copyright (c) 2013 TruongNGUYEN
     BH Licensed.
 */
+
+  var TYPE_INVITE = "invite";
+  var TYPE_WELLCOME = "wellcome";
+  var TYPE_RECEIVE_CONFIRM = "receiveConfirm";
+  var TYPE_START_GAME = "startGame";
+  var TYPE_NEXT_ROUND = "nextRound";
+  var TYPE_PLAYER_ANSWER = "playerAnswer";
+  var TYPE_END_GAME = "endGame";
+  var TYPE_PLAYER_DISCONNECT = "playerDisconnect";
+  var TYPE_PLAYER_RECONNECTED = "playerReconnect";
+  var TYPE_ONLINE_PLAYERS = "onlinePlayers";
+
     var recordIntervals = {};
     var numberOfPlayerAnswer = {};
     var gameRounds = {};
@@ -37,7 +49,7 @@
             dataToSend.data = data;
           games[currentGameOfPlayer[playerName]]. playerIds.forEach(function(playerId){
            if(playerId != playerName) {
-            app_server.sendMsgToClient(clients[playerId], dataToSend);
+              app_server.sendMsgToClient(clients[playerId], dataToSend);
             }
           });
           recordIntervals[currentGameOfPlayer[playerName]] = startIntervalTimer(games[currentGameOfPlayer[playerName]], 10,currentGameOfPlayer[playerName]);
@@ -75,15 +87,28 @@
       }
     };
 
+    game_server.getAvailablePlayers = function(sId) {
+      var availableUsers = new Array();
+      console.log("online users: " + JSON.stringify(players));
+      Object.keys(players).forEach(function(userName){
+      if (players[userName].status == 1)
+        availableUsers.push(userName);
+      });
+      console.log('Sending availableUsers to ' + sId);
+
+      var dataToSend  = {"type": TYPE_ONLINE_PLAYERS, "data":{"availablePlayers":availableUsers}};
+      app_server.sendMsgToClient(sId, dataToSend);
+    }; //game_server.getAvailablePlayers
+
     game_server.findGame = function(msg) {
         var obj = JSON.parse(msg);
         var dataToSend = {};
-        console.log('looking for a game for user: ' + obj.creatorId);
+        console.log('looking for a game for user: ' + obj.sender);
         for (var playerName in players) {
           console.log(JSON.stringify(playerName));
            if (players.hasOwnProperty(playerName)) {
-             if(playerName != obj.creatorId && players[playerName].status ==1) {
-                dataToSend.notice = "invite";
+             if(playerName != obj.sender && players[playerName].status ==1) {
+                dataToSend.notice = TYPE_INVITE;
                 dataToSend.data = obj;
                 console.log('found user: ' + JSON.stringify(playerName));
                 app_server.sendMsgToClient(players[playerName].socketId, dataToSend);
@@ -97,19 +122,19 @@
         console.log("Available user: " + JSON.stringify(clients));
         var obj = JSON.parse(msg);
         var dataToSend = {};
-        console.log('send confirm to creatorId: ' + obj.creatorId);
+        console.log('send confirm to sender: ' + obj.sender);
         dataToSend.notice = "receiveConfirm"
         dataToSend.data = obj;
-        app_server.sendMsgToClient(clients[obj.creatorId], dataToSend);
+        app_server.sendMsgToClient(clients[obj.sender], dataToSend);
     }; //game_server.confirmJoinGame
 
-     game_server.onStart = function(_id, msg) {
+     game_server.startGame = function(_id, msg) {
         var obj = JSON.parse(msg);
         var gameToSave = JSON.parse(obj.game);
         var dataToSend = {};
         console.log("Id after save: " + _id);
         games[_id] = gameToSave;
-        gameToSave._id = _id;
+        gameToSave.gameId = _id;
         obj.game = gameToSave;
         console.log("game saved with: "  + JSON.stringify(gameToSave));
         dataToSend.notice = "startGame";

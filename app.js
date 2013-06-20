@@ -98,11 +98,14 @@ io.sockets.on('connection', function(socket) {
     else if(obj.type == "confirmJoinGame") {
       game_server.confirmJoinGame(msg);
     }
-    else if(obj.type == "onStart") {
-      game_server.onStart(socket.id, msg);
+    else if(obj.type == "startGame") {
+      game_server.startGame(socket.id, msg);
     }
      else if(obj.type == "playerAnswer") {
       game_server.onPlayerAnswer(msg);
+    }
+     else if(obj.type == "onlinePlayers") {
+      game_server.getAvailablePlayers(socket.id);
     }
     // Is this an existing user name?
     
