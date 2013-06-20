@@ -109,8 +109,9 @@
         var dataToSend = {};
         console.log("Id after save: " + _id);
         games[_id] = gameToSave;
-        obj.game["_id"] = _id;
-        console.log("game saved with: "  + JSON.stringify(obj.game));
+        gameToSave._id = _id;
+        ohj.game = gameToSave;
+        console.log("game saved with: "  + JSON.stringify(gameToSave));
         dataToSend.notice = "startGame";
         dataToSend.data = obj;
          var playerIds = gameToSave.playerIds;
