@@ -124,7 +124,7 @@
         dataToSend.notice = TYPE_INVITE;
         console.log('looking for a game for user: ' + obj.sender);
         obj.data.friends.forEach(function(playerName){
-          dataToSend.data = obj;
+          dataToSend.data = obj.data;
           console.log('send invite to user: ' + JSON.stringify(playerName));
           app_server.sendMsgToClient(players[playerName].socketId, dataToSend);
         });
