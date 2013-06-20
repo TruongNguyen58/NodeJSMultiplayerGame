@@ -61,7 +61,7 @@
     }
 
     game_server.onUserDisconnect = function(sId) {
-       console.log("begin onUserDisconnect");
+       console.log("Player: + " + clients[socketsOfClients[sId]]+ "Disconnected");
       try{
         if(socketsOfClients[sId] != undefined) {
           if(currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
@@ -79,7 +79,9 @@
             clearInterval(recordIntervals[gameId]);
             }
           }
+          delete clients[socketsOfClients[sId]];
           delete socketsOfClients[sId];
+           console.log("clients: " +JSON.stringify(clients));
           console.log("socketsOfClients: " +JSON.stringify(socketsOfClients));
         }
       catch (err) {
@@ -182,7 +184,7 @@
       var _id = obj.gameId;
       var dataToSend = {};
       numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
-      console.log(_id + " --- " + obj.cardId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
+      console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
       console.log("Found game: " +JSON.stringify(games[_id]));
       games[_id].playerIds.forEach(function(playerId){
         if(playerId != obj.playerAnswer){
