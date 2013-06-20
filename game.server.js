@@ -80,6 +80,7 @@
         var dataToSend = {};
         console.log('looking for a game for user: ' + obj.creatorId);
         for (var playerName in players) {
+          console.log(JSON.stringify(playerName));
            if (players.hasOwnProperty(playerName)) {
              if(playerName != obj.creatorId && playerName.status ==1) {
                 dataToSend.notice = "invite";
