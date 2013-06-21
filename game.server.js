@@ -240,7 +240,7 @@
     }; //game_server.onPlayerAnswer
 
 
-    game_server.onPlayerAnswer = function(msg) {
+    game_server.onReceiveRqEndGame = function(msg) {
       console.log(msg);
       var obj = JSON.parse(msg);
       var _id = obj.gameId;
