@@ -29,8 +29,8 @@
 
     game_server.setUser = function(sId, playerName) {
         console.log("begin set user");
-        players[playerName] = {status: 1, socketId : sId};
         onUserConnect(sId, playerName);
+        players[playerName] = {status: 1, socketId : sId};
     };
 
     function onUserConnect(sId, playerName) {
@@ -48,7 +48,7 @@
       socketsOfClients[sId] = playerName;
       console.log("clients: " +JSON.stringify(clients));
       console.log("socketsOfClients: " +JSON.stringify(socketsOfClients));
-      if(currentGameOfPlayer[playerName] != undefined) {
+      if(currentGameOfPlayer[playerName] != undefined && players[playerName].status == 0) {
         try{
           var dataToSend = {};
           dataToSend.notice = "playerReconnect"
