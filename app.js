@@ -68,24 +68,9 @@ io.configure('development', function(){
    io.set('close timeout', 10); // 24h time out
 });
 
-var clients = {};
- 
-var socketsOfClients = {};
-
-function onUserConnect(socket, userName) {
- 
-      // Does not exist ... so, proceed
-      clients[userName] = socket.id;
-      socketsOfClients[socket.id] = userName;
-  
-}
-
 io.sockets.on('connection', function(socket) {
-  console.log("CLIENT:" + socket.id  + " CONNECTED TO SERVER");
   socket.on('setusername', function(playerName) {
-    // Is this an existing user name?
-    onUserConnect(socket,playerName);
-    // userJoined(playerName);
+    console.log("CLIENT:" + socket.id  + " CONNECTED TO SERVER");
     game_server.setUser(socket.id, playerName);
   });
 
@@ -110,36 +95,11 @@ io.sockets.on('connection', function(socket) {
     else if(obj.type == "invite") {
       game_server.inviteToGame(socket.id, msg);
     }
-    // Is this an existing user name?
-    
   });
   socket.on('disconnect', function() {
     game_server.onUserDisconnect(socket.id);
-    // userLeft(socketsOfClients[socket.id]);
   });
 });
- 
-function userJoined(uName) {
-    Object.keys(socketsOfClients).forEach(function(sId) {
-      if(io.sockets.sockets[sId]) {
-        console.log("User: " + uName + " connect to channel +xxxxxxxxxxxxxxxxxxxxxxxxxxxx " + JSON.stringify(uName));
-      io.sockets.sockets[sId].emit('userJoined', { "userName": uName });
-      }
-       
-    })
-}
- 
-function userLeft(uName) {
-  try{
-    console.log("User: " + uName + " disconnect to channel +xxxxxxxxxxxxxxxxxxxxxxxxxxxx " + JSON.stringify(uName));
-    io.sockets.emit('userLeft', { "userName": uName });
-    // delete socketsOfClients[clients[uName]];
-    // delete clients[uName];
-  }
-  catch (err){
-    console.log("Error when user left: " + JSON.stringify(err));
-  }    
-}
 
 app_server.sendMsgToClient = function(sId, msg) {
   try{
