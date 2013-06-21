@@ -109,6 +109,7 @@
             endgame(game[gameId], gameId, "playerQuitGame", data)
           }
         }
+      }
       catch (err) {
         console.log("ERORR onUserQuitGame: " + JSON.stringify(err));
       }
