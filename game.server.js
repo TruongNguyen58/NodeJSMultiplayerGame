@@ -265,6 +265,7 @@
               count++;
             }
             else{
+              clearInterval(this);
               endgame(games[_id], _id);
             }
         }, timerInterval*1000);
