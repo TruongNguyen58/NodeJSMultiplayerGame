@@ -288,7 +288,7 @@
 
     function endgame(game, _id) {
       clearInterval(recordIntervals[_id]);
-      console.log("End game! zzzzzzzzzzzzzzzzz");
+      console.log("End game! zzzzzzzzzzzzzzzzz: " +JSON.stringify(game));
       var dataToSend = {};
       dataToSend.notice = "endGame";
       dataToSend.data = {};
@@ -326,7 +326,7 @@
         game.playerIds.forEach(function(playerId){
           sendMessageToAPlayer(playerId, msg);
         });
-      }, 500);  
+      }, 100);  
     }
 
     function sendMessageToAPlayer(playerId, msg) {
