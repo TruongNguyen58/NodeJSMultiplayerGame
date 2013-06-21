@@ -274,15 +274,22 @@
       dataToSend.data = {};
       sendMessageToAll(game,dataToSend);
       setTimeout(function() {
-        delete recordIntervals[_id];
-        delete numberOfPlayerAnswer[_id];
-        delete gameRounds[_id];
-        games[_id].playerIds.forEach(function(playerId){
-          players[playerId].status = 1;
-          delete currentGameOfPlayer[playerId];
-        });
-        delete games[_id];
-      }, 1000); 
+        try{
+           delete recordIntervals[_id];
+            delete numberOfPlayerAnswer[_id];
+            delete gameRounds[_id];
+            console.log(JSON.stringify(games));
+            games[_id].playerIds.forEach(function(playerId){
+              players[playerId].status = 1;
+              delete currentGameOfPlayer[playerId];
+            });
+            delete games[_id];
+        }
+         catch(err) {
+             console.log("Error when delete data to endGame: " + JSON.stringify(err));
+          }
+       
+      }, 500); 
     }
 
     function sendRequestNextRoundToAll(game) {
