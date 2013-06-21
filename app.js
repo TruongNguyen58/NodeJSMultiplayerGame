@@ -96,7 +96,7 @@ io.sockets.on('connection', function(socket) {
       game_server.inviteToGame(socket.id, msg);
     }
      else if(obj.type == "requestEndGame") {
-      game_server.onReceiveRqEndGame(socket.id, msg);
+      game_server.onReceiveRqEndGame(msg);
     }
   });
   socket.on('disconnect', function() {
