@@ -335,7 +335,7 @@
     }
 
     function endgame(game, _id) {
-      endgame(game, _id, "endGame", {});
+     // endgame(game, _id, "endGame", {});
        clearInterval(recordIntervals[_id]);
       console.log("End game! zzzzzzzzzzzzzzzzz: " +JSON.stringify(game));
       var dataToSend = {};
