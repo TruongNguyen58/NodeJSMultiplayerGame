@@ -200,29 +200,30 @@
       console.log(msg);
       var obj = JSON.parse(msg);
       var _id = obj.gameId;
-      var dataToSend = {};
-      numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
-      console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
-      console.log("Found game: " +JSON.stringify(games[_id]));
-      try{
-        games[_id].playerIds.forEach(function(playerId){
-        if(playerId != obj.playerAnswer){
-          var dataToSend = {};
-          dataToSend.notice = obj.type;
-          dataToSend.data = obj;
-          sendMessageToAPlayer(playerId, dataToSend);
-        }
-        });
-        if(obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length) {
+      if(typeof games[_id] != undefined) {
+         var dataToSend = {};
+         numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
+         console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
+         console.log("Found game: " +JSON.stringify(games[_id]));
+         try{
+          games[_id].playerIds.forEach(function(playerId){
+            if(playerId != obj.playerAnswer){
+               var dataToSend = {};
+               dataToSend.notice = obj.type;
+               dataToSend.data = obj;
+                sendMessageToAPlayer(playerId, dataToSend);
+            }
+          });
+          if(obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length) {
         
-          gameRounds[_id] = gameRounds[_id] - 1;
-          numberOfPlayerAnswer[_id]= 0;
-          clearInterval(recordIntervals[_id]);
-          console.log("Game round remain: " + gameRounds[_id]);
-          if(gameRounds[_id] > 0){
-            console.log("Request next round");
-            sendRequestNextRoundToAll(games[_id]);
-            recordIntervals[_id] = startIntervalTimer(games[_id], 10, _id);
+            gameRounds[_id] = gameRounds[_id] - 1;
+            numberOfPlayerAnswer[_id]= 0;
+            clearInterval(recordIntervals[_id]);
+            console.log("Game round remain: " + gameRounds[_id]);
+            if(gameRounds[_id] > 0){
+              console.log("Request next round");
+              sendRequestNextRoundToAll(games[_id]);
+              recordIntervals[_id] = startIntervalTimer(games[_id], 10, _id);
           } 
           else {
             endgame(games[_id], _id);
@@ -232,6 +233,19 @@
       }
       catch (err) {
          console.log("Error when process player answer: " + JSON.stringify(err));
+      }
+      }
+     
+      
+    }; //game_server.onPlayerAnswer
+
+
+    game_server.onPlayerAnswer = function(msg) {
+      console.log(msg);
+      var obj = JSON.parse(msg);
+      var _id = obj.gameId;
+      if(typeof games[_id] != undefined) {
+        endgame(games[_id],_id);
       }
       
     }; //game_server.onPlayerAnswer
