@@ -3,6 +3,7 @@
 */
 
   var TYPE_INVITE = "invite";
+   var TYPE_PLAYER_NOT_AVAILABLE = "playerNotAvailable";
   var TYPE_WELLCOME = "wellcome";
   var TYPE_RECEIVE_CONFIRM = "receiveConfirm";
   var TYPE_START_GAME = "startGame";
@@ -124,12 +125,20 @@
     game_server.inviteToGame = function(msg) {
         var obj = JSON.parse(msg);
         var dataToSend = {};
-        dataToSend.notice = TYPE_INVITE;
         console.log('looking for a game for user: ' + obj.sender);
-        obj.data.friends.forEach(function(playerName){
-          dataToSend.data = obj.data;
-          console.log('send invite to user: ' + JSON.stringify(playerName));
-          app_server.sendMsgToClient(players[playerName].socketId, dataToSend);
+        obj.data.friends.forEach(function(playerId){
+          if(players[playerId].status == 1) {
+            dataToSend.notice = TYPE_INVITE;
+             dataToSend.data = obj.data;
+             console.log('send invite to user: ' + JSON.stringify(playerId));
+             app_server.sendMsgToClient(players[playerId].socketId, dataToSend);
+          }
+          else {
+            dataToSend.notice = TYPE_PLAYER_NOT_AVAILABLE;
+            dataToSend.data = {"friends" : playerId};
+            app_server.sendMsgToClient(players[playerId].socketId, dataToSend);
+          }
+        
         });
        
     }; //game_server.inviteToGame
