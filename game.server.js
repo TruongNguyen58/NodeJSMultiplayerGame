@@ -122,7 +122,7 @@
         }
     }; //game_server.findGame
 
-    game_server.inviteToGame = function(msg) {
+    game_server.inviteToGame = function(sId, msg) {
         var obj = JSON.parse(msg);
         var dataToSend = {};
         console.log('looking for a game for user: ' + obj.sender);
@@ -136,7 +136,7 @@
           else {
             dataToSend.notice = TYPE_PLAYER_NOT_AVAILABLE;
             dataToSend.data = {"friends" : playerId};
-            app_server.sendMsgToClient(players[playerId].socketId, dataToSend);
+            app_server.sendMsgToClient(sId, dataToSend);
           }
         
         });

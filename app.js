@@ -108,7 +108,7 @@ io.sockets.on('connection', function(socket) {
       game_server.getAvailablePlayers(socket.id);
     }
     else if(obj.type == "invite") {
-      game_server.inviteToGame(msg);
+      game_server.inviteToGame(socket.id, msg);
     }
     // Is this an existing user name?
     
