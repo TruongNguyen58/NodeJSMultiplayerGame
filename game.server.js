@@ -204,30 +204,36 @@
       numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
       console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
       console.log("Found game: " +JSON.stringify(games[_id]));
-      games[_id].playerIds.forEach(function(playerId){
+      try{
+        games[_id].playerIds.forEach(function(playerId){
         if(playerId != obj.playerAnswer){
           var dataToSend = {};
           dataToSend.notice = obj.type;
           dataToSend.data = obj;
           sendMessageToAPlayer(playerId, dataToSend);
         }
-      });
-      if(obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length) {
-      
-        gameRounds[_id] = gameRounds[_id] - 1;
-        numberOfPlayerAnswer[_id]= 0;
-        clearInterval(recordIntervals[_id]);
-        console.log("Game round remain: " + gameRounds[_id]);
-        if(gameRounds[_id] > 0){
-          console.log("Request next round");
-          sendRequestNextRoundToAll(games[_id]);
-          recordIntervals[_id] = startIntervalTimer(games[_id], 10, _id);
-        } 
-        else {
-          endgame(games[_id], _id);
+        });
+        if(obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length) {
+        
+          gameRounds[_id] = gameRounds[_id] - 1;
+          numberOfPlayerAnswer[_id]= 0;
+          clearInterval(recordIntervals[_id]);
+          console.log("Game round remain: " + gameRounds[_id]);
+          if(gameRounds[_id] > 0){
+            console.log("Request next round");
+            sendRequestNextRoundToAll(games[_id]);
+            recordIntervals[_id] = startIntervalTimer(games[_id], 10, _id);
+          } 
+          else {
+            endgame(games[_id], _id);
+          }
+          // games[_id].currRound = games[_id].currRound+1;
         }
-        // games[_id].currRound = games[_id].currRound+1;
       }
+      catch (err) {
+         console.log("Error when process player answer: " + JSON.stringify(err));
+      }
+      
     }; //game_server.onPlayerAnswer
 
     function is_empty(obj) {
@@ -289,7 +295,7 @@
              console.log("Error when delete data to endGame: " + JSON.stringify(err));
           }
        
-      }, 500); 
+      }, 3*1000); 
     }
 
     function sendRequestNextRoundToAll(game) {
