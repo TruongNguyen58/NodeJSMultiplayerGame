@@ -339,7 +339,7 @@
        clearInterval(recordIntervals[_id]);
       console.log("End game! zzzzzzzzzzzzzzzzz: " +JSON.stringify(game));
       var dataToSend = {};
-      dataToSend.notice = endGame;
+      dataToSend.notice = "endGame";
       dataToSend.data = {};
       sendMessageToAll(game,dataToSend);
       setTimeout(function() {
