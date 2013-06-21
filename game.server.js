@@ -21,7 +21,7 @@
     var socketsOfClients = {};
     var games = {};
     var players = {};
-    // var currentGameOfPlayer = {};
+    var currentGameOfPlayer = {};
     var
         game_server = module.exports,
         app_server = require('./app.js'),
@@ -313,6 +313,7 @@
             delete gameRounds[_id];
             console.log(JSON.stringify(games));
             games[_id].playerIds.forEach(function(playerId){
+              delete currentGameOfPlayer[playerId];
               if(players[playerId].status  == 2 )
                players[playerId].status = 1;
             });
