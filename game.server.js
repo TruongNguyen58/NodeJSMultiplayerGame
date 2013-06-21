@@ -349,7 +349,8 @@
             delete gameRounds[_id];
             console.log(JSON.stringify(games));
             games[_id].playerIds.forEach(function(playerId){
-              players[playerId].status = 1;
+              if(players[playerId].status  == 2 )
+               players[playerId].status = 1;
               delete currentGameOfPlayer[playerId];
             });
             delete games[_id];
