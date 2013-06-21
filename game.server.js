@@ -244,6 +244,8 @@
       console.log(msg);
       var obj = JSON.parse(msg);
       var _id = obj.gameId;
+      console.log("Game with id: " + _id + " receive request to end!");
+      console.log("Current Games: " + JSON.stringify(games) );
       if(typeof games[_id] != undefined) {
         endgame(games[_id],_id);
       }
