@@ -269,7 +269,8 @@
     }
 
     function startIntervalTimer(game, timerInterval, _id) {
-        var start_time = new Date();
+      if(typeof game != undefined){
+         var start_time = new Date();
         console.log("Starting " + timerInterval+ " second interval, stopperd after " + gameRounds[_id]+ " th tick");
         var count = 1;
         var interval = setInterval(function(){
@@ -286,6 +287,7 @@
             }
         }, timerInterval*1000);
         return interval;
+      } 
     }
 
     function endgame(game, _id) {
@@ -315,20 +317,24 @@
     }
 
     function sendRequestNextRoundToAll(game) {
-      var dataToSend = {};
-      dataToSend.notice = "nextRound";
-      dataToSend.data = {};
-      sendMessageToAll(game,dataToSend);
-      game.currRound = game.currRound+1;
-      console.log("game saved: "  + JSON.stringify(game));
+     if(typeof game != undefined) {
+        var dataToSend = {};
+        dataToSend.notice = "nextRound";
+        dataToSend.data = {};
+        sendMessageToAll(game,dataToSend);
+        game.currRound = game.currRound+1;
+        console.log("game saved: "  + JSON.stringify(game));
+     }
     }
 
     function sendMessageToAll(game, msg) {
-      setTimeout(function() {
+      if(typeof game != undefined) {
+        setTimeout(function() {
         game.playerIds.forEach(function(playerId){
           sendMessageToAPlayer(playerId, msg);
         });
-      }, 100);  
+        }, 100); 
+      } 
     }
 
     function sendMessageToAPlayer(playerId, msg) {
