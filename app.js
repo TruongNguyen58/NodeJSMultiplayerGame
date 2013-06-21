@@ -98,6 +98,9 @@ io.sockets.on('connection', function(socket) {
      else if(obj.type == "requestEndGame") {
       game_server.onReceiveRqEndGame(msg);
     }
+    else if(obj.type == "playerQuitGame") {
+      game_server.onUserQuitGame(socket.id);
+    }
   });
   socket.on('disconnect', function() {
     game_server.onUserDisconnect(socket.id);

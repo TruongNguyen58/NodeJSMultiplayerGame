@@ -70,7 +70,7 @@
     }
 
     game_server.onUserDisconnect = function(sId) {
-       console.log("Player: + " + clients[socketsOfClients[sId]]+ "Disconnected");
+       console.log("Player: " + clients[socketsOfClients[sId]]+ " Disconnected");
       try{
         if(socketsOfClients[sId] != undefined) {
           if(currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
@@ -98,6 +98,35 @@
         console.log("ERORR onUserDisconnect: " + JSON.stringify(err));
       }
     };
+
+      game_server.onUserQuitGame = function(sId) {
+       console.log("Player: " + clients[socketsOfClients[sId]]+ " Quit game");
+      try{
+        if(socketsOfClients[sId] != undefined) {
+          if(currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
+            var gameId = currentGameOfPlayer[socketsOfClients[sId]];
+            var dataToSend = {};
+            dataToSend.notice = "playerQuitGame"
+            var data = {"player" : socketsOfClients[sId]};
+            data.player = socketsOfClients[sId];
+            dataToSend.data = data;
+            games[gameId]. playerIds.forEach(function(playerId){
+                app_server.sendMsgToClient(clients[playerId], dataToSend);
+            });
+            clearInterval(recordIntervals[gameId]);
+            }
+          }
+          players[socketsOfClients[sId]].status = 0;
+          delete clients[socketsOfClients[sId]];
+          delete socketsOfClients[sId];
+           console.log("clients: " +JSON.stringify(clients));
+          console.log("socketsOfClients: " +JSON.stringify(socketsOfClients));
+        }
+      catch (err) {
+        console.log("ERORR onUserQuitGame: " + JSON.stringify(err));
+      }
+    };
+
 
     game_server.getAvailablePlayers = function(sId) {
       var availableUsers = new Array();
