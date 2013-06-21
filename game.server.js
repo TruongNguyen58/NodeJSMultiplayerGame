@@ -38,6 +38,12 @@
       console.log("User: " +playerName  + " connected with socketID: " + sId);
       // Does not exist ... so, proceed
       clients[playerName] = sId;
+      for( var key in socketsOfClients.keys){
+        if(socketsOfClients[key] == playerName){
+          delete socketsOfClients[key];
+          break;
+        }
+      }
       socketsOfClients[sId] = playerName;
       console.log("clients: " +JSON.stringify(clients));
       console.log("socketsOfClients: " +JSON.stringify(socketsOfClients));
