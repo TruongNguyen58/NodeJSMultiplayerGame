@@ -99,28 +99,15 @@
       }
     };
 
-      game_server.onUserQuitGame = function(sId) {
+    game_server.onUserQuitGame = function(sId) {
        console.log("Player: " + clients[socketsOfClients[sId]]+ " Quit game");
       try{
         if(socketsOfClients[sId] != undefined) {
           if(currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
             var gameId = currentGameOfPlayer[socketsOfClients[sId]];
-            var dataToSend = {};
-            dataToSend.notice = "playerQuitGame"
             var data = {"player" : socketsOfClients[sId]};
-            data.player = socketsOfClients[sId];
-            dataToSend.data = data;
-            games[gameId]. playerIds.forEach(function(playerId){
-                app_server.sendMsgToClient(clients[playerId], dataToSend);
-            });
-            clearInterval(recordIntervals[gameId]);
-            }
+            endgame(game[gameId], gameId, "playerQuitGame", data)
           }
-          players[socketsOfClients[sId]].status = 0;
-          delete clients[socketsOfClients[sId]];
-          delete socketsOfClients[sId];
-           console.log("clients: " +JSON.stringify(clients));
-          console.log("socketsOfClients: " +JSON.stringify(socketsOfClients));
         }
       catch (err) {
         console.log("ERORR onUserQuitGame: " + JSON.stringify(err));
@@ -320,12 +307,12 @@
       } 
     }
 
-    function endgame(game, _id) {
+    function endgame(game, _id, notice, data) {
       clearInterval(recordIntervals[_id]);
       console.log("End game! zzzzzzzzzzzzzzzzz: " +JSON.stringify(game));
       var dataToSend = {};
-      dataToSend.notice = "endGame";
-      dataToSend.data = {};
+      dataToSend.notice = notice;
+      dataToSend.data = data;
       sendMessageToAll(game,dataToSend);
       setTimeout(function() {
         try{
@@ -341,9 +328,13 @@
         }
          catch(err) {
              console.log("Error when delete data to endGame: " + JSON.stringify(err));
-          }
+        }
        
       }, 3*1000); 
+    }
+
+    function endgame(game, _id) {
+      endgame(game, _id, "endGame", {});
     }
 
     function sendRequestNextRoundToAll(game) {
