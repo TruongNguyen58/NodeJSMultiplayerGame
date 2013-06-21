@@ -38,13 +38,14 @@
       console.log("User: " +playerName  + " connected with socketID: " + sId);
       // Does not exist ... so, proceed
       clients[playerName] = sId;
-      for( var key in socketsOfClients.keys){
-        console.log("Key: " +key + " Value: " + socketsOfClients[key] + " PlayerName: " + playerName);
-        if(socketsOfClients[key] == playerName){
-          delete socketsOfClients[key];
+      Object.keys(socketsOfClients).forEach(function(oldSocketId){
+         console.log("Key: " +oldSocketId + " Value: " + socketsOfClients[oldSocketId] + " PlayerName: " + playerName);
+        if (socketsOfClients[oldSocketId] == playerName){
+          delete socketsOfClients[oldSocketId];
           break;
         }
-      }
+      });
+    
       socketsOfClients[sId] = playerName;
       console.log("clients: " +JSON.stringify(clients));
       console.log("socketsOfClients: " +JSON.stringify(socketsOfClients));
