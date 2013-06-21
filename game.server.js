@@ -106,7 +106,7 @@
           if(currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
             var gameId = currentGameOfPlayer[socketsOfClients[sId]];
             var data = {"player" : socketsOfClients[sId]};
-            endgame(game[gameId], gameId, "playerQuitGame", data)
+            endgame(games[gameId], gameId, "playerQuitGame", data)
           }
         }
       }
