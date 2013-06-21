@@ -79,6 +79,7 @@
             clearInterval(recordIntervals[gameId]);
             }
           }
+          players[socketsOfClients[sId]].status = 0;
           delete clients[socketsOfClients[sId]];
           delete socketsOfClients[sId];
            console.log("clients: " +JSON.stringify(clients));
@@ -161,6 +162,7 @@
          try{
           var i=0;
           playerIds.forEach(function(playerId){
+            players[playerId].status = 2;
             currentGameOfPlayer[playerId] = _id;
             app_server.sendMsgToClient(clients[playerId], dataToSend);
           });
@@ -260,6 +262,7 @@
         delete numberOfPlayerAnswer[_id];
         delete gameRounds[_id];
         games[_id].playerIds.forEach(function(playerId){
+          players[playerId].status = 1;
           delete currentGameOfPlayer[playerId];
         });
         delete games[_id];
