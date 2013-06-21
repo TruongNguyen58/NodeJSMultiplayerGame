@@ -22,6 +22,7 @@
     var games = {};
     var players = {};
     var currentGameOfPlayer = {};
+    var disconnectedPlayers = {};
     var
         game_server = module.exports,
         app_server = require('./app.js'),
@@ -329,11 +330,17 @@
 
     function sendMessageToAll(game, msg) {
       if(typeof game != undefined) {
-        setTimeout(function() {
-        game.playerIds.forEach(function(playerId){
-          sendMessageToAPlayer(playerId, msg);
-        });
+        try{
+          setTimeout(function() {
+          game.playerIds.forEach(function(playerId){
+            sendMessageToAPlayer(playerId, msg);
+          });
         }, 100); 
+        }
+        catch (err) {
+
+        }
+        
       } 
     }
 
