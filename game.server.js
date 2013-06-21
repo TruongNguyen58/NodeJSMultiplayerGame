@@ -42,7 +42,6 @@
          console.log("Key: " +oldSocketId + " Value: " + socketsOfClients[oldSocketId] + " PlayerName: " + playerName);
         if (socketsOfClients[oldSocketId] == playerName){
           delete socketsOfClients[oldSocketId];
-          break;
         }
       });
     
