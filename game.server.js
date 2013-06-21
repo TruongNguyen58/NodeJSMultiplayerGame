@@ -21,8 +21,7 @@
     var socketsOfClients = {};
     var games = {};
     var players = {};
-    var currentGameOfPlayer = {};
-    var disconnectedPlayers = {};
+    // var currentGameOfPlayer = {};
     var
         game_server = module.exports,
         app_server = require('./app.js'),
@@ -49,54 +48,9 @@
       socketsOfClients[sId] = playerName;
       console.log("clients: " +JSON.stringify(clients));
       console.log("socketsOfClients: " +JSON.stringify(socketsOfClients));
-      if(currentGameOfPlayer[playerName] != undefined && players[playerName].status == 0) {
-        try{
-          var dataToSend = {};
-          dataToSend.notice = "playerReconnect"
-          var data = {};
-            data.player = playerName;
-            dataToSend.data = data;
-          games[currentGameOfPlayer[playerName]]. playerIds.forEach(function(playerId){
-           if(playerId != playerName) {
-              app_server.sendMsgToClient(clients[playerId], dataToSend);
-            }
-          });
-          recordIntervals[currentGameOfPlayer[playerName]] = startIntervalTimer(games[currentGameOfPlayer[playerName]], 10,currentGameOfPlayer[playerName]);
-        }
-        catch (err) {
-          console.log("ERORR: " + JSON.stringify(err));
-        }
-      }
     }
 
     game_server.onUserDisconnect = function(sId) {
-      //  console.log("Player: " + clients[socketsOfClients[sId]]+ " Disconnected");
-      // try{
-      //   if(socketsOfClients[sId] != undefined) {
-      //     if(currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
-      //       var gameId = currentGameOfPlayer[socketsOfClients[sId]];
-      //       var dataToSend = {};
-      //       dataToSend.notice = "playerDisconnect"
-      //       var data = {};
-      //       data.player = socketsOfClients[sId];
-      //       dataToSend.data = data;
-      //       games[gameId]. playerIds.forEach(function(playerId){
-      //         if(playerId != socketsOfClients[sId]) {
-      //           app_server.sendMsgToClient(clients[playerId], dataToSend);
-      //         }
-      //       });
-      //       clearInterval(recordIntervals[gameId]);
-      //       }
-      //     }
-      //     players[socketsOfClients[sId]].status = 0;
-      //     delete clients[socketsOfClients[sId]];
-      //     delete socketsOfClients[sId];
-      //      console.log("clients: " +JSON.stringify(clients));
-      //     console.log("socketsOfClients: " +JSON.stringify(socketsOfClients));
-      //   }
-      // catch (err) {
-      //   console.log("ERORR onUserDisconnect: " + JSON.stringify(err));
-      // }
       console.log("Player: " + clients[socketsOfClients[sId]]+ " Quit game");
       try{
         if(socketsOfClients[sId] != undefined) {
@@ -108,7 +62,7 @@
         }
       }
       catch (err) {
-        console.log("ERORR onUserQuitGame: " + JSON.stringify(err));
+        console.log("ERORR onUserDisconnect: " + JSON.stringify(err));
       }
     };
 
@@ -361,7 +315,6 @@
             games[_id].playerIds.forEach(function(playerId){
               if(players[playerId].status  == 2 )
                players[playerId].status = 1;
-              delete currentGameOfPlayer[playerId];
             });
             delete games[_id];
         }
