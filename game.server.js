@@ -332,7 +332,13 @@
     }
 
     function sendMessageToAPlayer(playerId, msg) {
-        app_server.sendMsgToClient(clients[playerId], msg)
+      try{
+         app_server.sendMsgToClient(clients[playerId], msg);
+      }
+      catch (err) {
+         console.log("Error when sendMessageToAPlayer " + JSON.stringify(err));
+      }
+       
     }
 
 
