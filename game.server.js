@@ -267,18 +267,15 @@
       if(typeof games[_id] != undefined) {
         endgame(games[_id],_id);
       }
-      
     }; //game_server.onPlayerAnswer
 
     function is_empty(obj) {
-
     // null and undefined are empty
         if (obj == null) return true;
         // Assume if it has a length property with a non-zero value
         // that that property is correct.
         if (obj.length && obj.length > 0)    return false;
         if (obj.length === 0)  return true;
-
         for (var key in obj) {
             if (hasOwnProperty.call(obj, key))    return false;
         }
@@ -364,11 +361,11 @@
 
     function sendRequestNextRoundToAll(game) {
      if(typeof game != undefined) {
+      game.currRound = game.currRound+1;
         var dataToSend = {};
         dataToSend.notice = "nextRound";
-        dataToSend.data = {};
+        dataToSend.data = {"round" : game.currRound};
         sendMessageToAll(game,dataToSend);
-        game.currRound = game.currRound+1;
         console.log("game saved: "  + JSON.stringify(game));
      }
     }
@@ -376,16 +373,12 @@
     function sendMessageToAll(game, msg) {
       if(typeof game != undefined) {
         try{
-          setTimeout(function() {
           game.playerIds.forEach(function(playerId){
             sendMessageToAPlayer(playerId, msg);
           });
-        }, 100); 
         }
         catch (err) {
-
         }
-        
       } 
     }
 
