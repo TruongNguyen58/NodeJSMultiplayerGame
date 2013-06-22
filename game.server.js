@@ -84,16 +84,26 @@
 
 
     game_server.getAvailablePlayers = function(sId) {
-      var availableUsers = new Array();
-      console.log("online users: " + JSON.stringify(players));
-      Object.keys(players).forEach(function(userName){
-      if (players[userName].status == 1)
-        availableUsers.push(userName);
-      });
-      console.log('Sending availableUsers to ' + sId);
+        setTimeout(function() {
+        try{
+          var availableUsers = new Array();
+          console.log("online users: " + JSON.stringify(players));
+          Object.keys(players).forEach(function(userName){
+          if (players[userName].status == 1)
+            availableUsers.push(userName);
+          });
+          console.log('Sending availableUsers to ' + sId);
 
-      var dataToSend  = {"notice": TYPE_ONLINE_PLAYERS, "data":{"availablePlayers":availableUsers}};
-      app_server.sendMsgToClient(sId, dataToSend);
+          var dataToSend  = {"notice": TYPE_ONLINE_PLAYERS, "data":{"availablePlayers":availableUsers}};
+          app_server.sendMsgToClient(sId, dataToSend);
+           
+        }
+         catch(err) {
+             console.log("Error when delete data to endGame: " + JSON.stringify(err));
+        }
+       
+      }, 1*1000); 
+      
     }; //game_server.getAvailablePlayers
 
     game_server.findGame = function(msg) {
