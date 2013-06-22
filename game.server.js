@@ -304,6 +304,8 @@
             console.log(JSON.stringify(games));
             games[_id].playerIds.forEach(function(playerId){
               players[playerId].status = 1;
+              if(typeof currentGameOfPlayer[playerId] != undefined)
+                delete currentGameOfPlayer[playerId];
               delete currentGameOfPlayer[playerId];
             });
             delete games[_id];
@@ -317,7 +319,7 @@
 
     function endgame(game, _id) {
      // endgame(game, _id, "endGame", {});
-       clearInterval(recordIntervals[_id]);
+      clearInterval(recordIntervals[_id]);
       console.log("End game! zzzzzzzzzzzzzzzzz: " +JSON.stringify(game));
       var dataToSend = {};
       dataToSend.notice = "endGame";
@@ -330,7 +332,8 @@
             delete gameRounds[_id];
             console.log(JSON.stringify(games));
             games[_id].playerIds.forEach(function(playerId){
-              delete currentGameOfPlayer[playerId];
+              if(typeof currentGameOfPlayer[playerId] != undefined)
+                delete currentGameOfPlayer[playerId];
               if(players[playerId].status  == 2 )
                players[playerId].status = 1;
             });
