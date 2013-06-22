@@ -41,8 +41,8 @@
         delete players[playerName];
       }
     
-        players[playerName] = {"status": 1, "socketId" : sId};
-      
+      players[playerName] = {"status": 1, "socketId" : sId};
+      console.log("Current player: " + JSON.stringify(players[playerName]));
       Object.keys(socketsOfClients).forEach(function(oldSocketId){
          console.log("Key: " +oldSocketId + " Value: " + socketsOfClients[oldSocketId] + " PlayerName: " + playerName);
         if (socketsOfClients[oldSocketId] == playerName){
