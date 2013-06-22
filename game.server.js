@@ -56,9 +56,10 @@
     }
 
     game_server.onUserDisconnect = function(sId) {
-      console.log("Player: " + clients[socketsOfClients[sId]]+ " playerDisconnect game");
+      
       try{
         if(socketsOfClients[sId] != undefined) {
+          console.log("Player: " + clients[socketsOfClients[sId]]+ " playerDisconnect game");
           if(currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
             var gameId = currentGameOfPlayer[socketsOfClients[sId]];
             var data = {"player" : socketsOfClients[sId]};
