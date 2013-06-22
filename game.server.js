@@ -65,6 +65,8 @@
             var data = {"player" : socketsOfClients[sId]};
             endWhenPlayerQuitGame(games[gameId], gameId, "playerQuitGame", data)
           }
+          delete clients[socketsOfClients[sId]];
+          delete socketsOfClients[sId];
         }
       }
       catch (err) {
