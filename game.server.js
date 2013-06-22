@@ -51,7 +51,7 @@
     }
 
     game_server.onUserDisconnect = function(sId) {
-      console.log("Player: " + clients[socketsOfClients[sId]]+ " Quit game");
+      console.log("Player: " + clients[socketsOfClients[sId]]+ " playerDisconnect game");
       try{
         if(socketsOfClients[sId] != undefined) {
           if(currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
@@ -149,7 +149,7 @@
         var obj = JSON.parse(msg);
         var gameToSave = JSON.parse(obj.game);
         var dataToSend = {};
-        console.log("Id after save: " + _id);
+        console.log("Game before save: " + JSON.stringify(gameToSave));
         games[_id] = gameToSave;
         gameToSave.gameId = _id;
         obj.game = gameToSave;
@@ -339,6 +339,7 @@
     }
 
     function sendMessageToAll(game, msg) {
+      console.log(JSON.stringify(game));
       if(typeof game != undefined) {
         try{
           game.playerIds.forEach(function(playerId){
