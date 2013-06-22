@@ -30,7 +30,6 @@
     game_server.setUser = function(sId, playerName) {
         console.log("begin set user");
         onUserConnect(sId, playerName);
-        players[playerName] = {status: 1, socketId : sId};
     };
 
     function onUserConnect(sId, playerName) {
@@ -38,6 +37,12 @@
       console.log("User: " +playerName  + " connected with socketID: " + sId);
       // Does not exist ... so, proceed
       clients[playerName] = sId;
+      if(typeof players[playerName] != undefined) {
+        players[playerName].socketId = sId;
+      }
+      else {
+          players[playerName] = {"status": 1, "socketId" : sId};
+      }
       Object.keys(socketsOfClients).forEach(function(oldSocketId){
          console.log("Key: " +oldSocketId + " Value: " + socketsOfClients[oldSocketId] + " PlayerName: " + playerName);
         if (socketsOfClients[oldSocketId] == playerName){
@@ -109,7 +114,7 @@
     game_server.findGame = function(msg) {
         var obj = JSON.parse(msg);
         var dataToSend = {};
-        console.log('looking for a game for user: ' + obj.sender);
+        console.log('looking for a game for user: ' + obj.data.sender);
         for (var playerName in players) {
           console.log(JSON.stringify(playerName));
            if (players.hasOwnProperty(playerName)) {
@@ -117,7 +122,7 @@
                 dataToSend.notice = TYPE_INVITE;
                 dataToSend.data = obj;
                 console.log('found user: ' + JSON.stringify(playerName));
-                app_server.sendMsgToClient(players[playerName].socketId, dataToSend);
+                app_server.sendMsgToClient(clients[playerName], dataToSend);
                 break;
              }
            }
@@ -127,13 +132,13 @@
     game_server.inviteToGame = function(sId, msg) {
         var obj = JSON.parse(msg);
         var dataToSend = {};
-        console.log('looking for a game for user: ' + obj.sender);
+        console.log('looking for a game for user: ' + obj.data.sender);
         obj.data.friends.forEach(function(playerId){
           if(players[playerId].status == 1) {
             dataToSend.notice = TYPE_INVITE;
              dataToSend.data = obj.data;
              console.log('send invite to user: ' + JSON.stringify(playerId));
-             app_server.sendMsgToClient(players[playerId].socketId, dataToSend);
+             app_server.sendMsgToClient(clients[playerId], dataToSend);
           }
           else {
             dataToSend.notice = TYPE_PLAYER_NOT_AVAILABLE;
