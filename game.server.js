@@ -38,11 +38,11 @@
       // Does not exist ... so, proceed
       clients[playerName] = sId;
       if(typeof players[playerName] != undefined) {
-        players[playerName].socketId = sId;
+        delete players[playerName];
       }
-      else {
-          players[playerName] = {"status": 1, "socketId" : sId};
-      }
+    
+        players[playerName] = {"status": 1, "socketId" : sId};
+      
       Object.keys(socketsOfClients).forEach(function(oldSocketId){
          console.log("Key: " +oldSocketId + " Value: " + socketsOfClients[oldSocketId] + " PlayerName: " + playerName);
         if (socketsOfClients[oldSocketId] == playerName){
