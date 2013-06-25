@@ -16,7 +16,7 @@
 
     var recordIntervals = {};
     var numberOfPlayerAnswer = {};
-    var gameRounds = {};
+  //  var gameRounds = {};
     var clients = {};
     var socketsOfClients = {};
     var games = {};
@@ -175,7 +175,7 @@
         dataToSend.notice = "startGame";
         dataToSend.data = obj;
          var playerIds = gameToSave.playerIds;
-         var roundNum = gameToSave.roundNum;
+        // var roundNum = gameToSave.roundNum;
          console.log(gameToSave +"---"+playerIds);
          // var sockets = new Array();
          try{
@@ -191,8 +191,8 @@
          }
         
          // gameSockets[_id] = sockets;
-         gameRounds[_id] = roundNum;
-         console.log("GameRound: " + JSON.stringify(gameRounds));
+        // gameRounds[_id] = roundNum;
+        // console.log("GameRound: " + JSON.stringify(gameRounds));
          numberOfPlayerAnswer[_id] = 0;
          setTimeout(function() {
            recordIntervals[_id] = startIntervalTimer(games[_id], 10,_id);
@@ -219,19 +219,20 @@
           });
           if(obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length) {
         
-            gameRounds[_id] = gameRounds[_id] - 1;
+            //gameRounds[_id] = gameRounds[_id] - 1;
+			games[_id].currRound = games[_id].currRound+1;
             numberOfPlayerAnswer[_id]= 0;
             clearInterval(recordIntervals[_id]);
-            console.log("Game round remain: " + gameRounds[_id]);
-            if(gameRounds[_id] > 0){
+            //console.log("Game round remain: " + gameRounds[_id]);
+            if(games[_id].currRound < games[_id].roundNum){
               console.log("Request next round");
               sendRequestNextRoundToAll(games[_id]);
               recordIntervals[_id] = startIntervalTimer(games[_id], 10, _id);
-          } 
-          else {
-            endgame(games[_id], _id);
-          }
-          // games[_id].currRound = games[_id].currRound+1;
+			} 
+			else {
+				endgame(games[_id], _id);
+			}
+          // 
         }
       }
       catch (err) {
@@ -271,11 +272,12 @@
     function startIntervalTimer(game, timerInterval, _id) {
       if(typeof game != undefined){
          var start_time = new Date();
-        console.log("Starting " + timerInterval+ " second interval, stopperd after " + gameRounds[_id]+ " th tick");
+        //console.log("Starting " + timerInterval+ " second interval, stopperd after " + gameRounds[_id]+ " th tick");
         var count = 1;
         var interval = setInterval(function(){
-           gameRounds[_id] = gameRounds[_id] - 1;
-            if(gameRounds[_id] > 0){
+           //gameRounds[_id] = gameRounds[_id] - 1;
+		   games[_id].currRound = games[_id].currRound+1;
+            if(games[_id].currRound < games[_id].roundNum){
               var end_time = new Date();
               var dif = end_time.getTime() - start_time.getTime();
               console.log("Tick no. " + count + " after " + Math.round(dif/1000) + " seconds");
@@ -302,7 +304,7 @@
         try{
            delete recordIntervals[_id];
             delete numberOfPlayerAnswer[_id];
-            delete gameRounds[_id];
+            //delete gameRounds[_id];
             console.log(JSON.stringify(games));
             games[_id].playerIds.forEach(function(playerId){
               players[playerId].status = 1;
@@ -331,7 +333,7 @@
         try{
            delete recordIntervals[_id];
             delete numberOfPlayerAnswer[_id];
-            delete gameRounds[_id];
+          //  delete gameRounds[_id];
             console.log(JSON.stringify(games));
             games[_id].playerIds.forEach(function(playerId){
               if(typeof currentGameOfPlayer[playerId] != undefined)
@@ -350,7 +352,7 @@
 
     function sendRequestNextRoundToAll(game) {
      if(typeof game != undefined) {
-      game.currRound = game.currRound+1;
+    //  game.currRound = game.currRound+1;
         var dataToSend = {};
         dataToSend.notice = "nextRound";
         dataToSend.data = {"round" : game.currRound};
