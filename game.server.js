@@ -207,7 +207,7 @@
          numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
          console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
          console.log("Found game: " +JSON.stringify(games[_id]));
-		 if(games[_id].passedRound[games[_id].currRound] == undefined)
+		 if(typeof games[_id].passedRound[games[_id].currRound] == undefined)
 			games[_id].passedRound[games[_id].currRound] = false;
          try{
           games[_id].playerIds.forEach(function(playerId){
@@ -229,7 +229,6 @@
               console.log("Request next round");
               sendRequestNextRoundToAll(games[_id]);
 			  if(typeof recordIntervals[_id] != undefined){
-				 clearInterval(recordIntervals[_id]);
 				 delete recordIntervals[_id];
 			  }
               recordIntervals[_id] = startIntervalTimer(games[_id], 10, _id);
