@@ -310,7 +310,6 @@
               players[playerId].status = 1;
               if(typeof currentGameOfPlayer[playerId] != undefined)
                 delete currentGameOfPlayer[playerId];
-              delete currentGameOfPlayer[playerId];
             });
             delete games[_id];
         }
