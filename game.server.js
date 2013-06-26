@@ -16,7 +16,6 @@
 
     var recordIntervals = {};
     var numberOfPlayerAnswer = {};
-  //  var gameRounds = {};
     var clients = {};
     var socketsOfClients = {};
     var games = {};
@@ -40,7 +39,6 @@
       if(typeof players[playerName] != undefined) {
         delete players[playerName];
       }
-    
       players[playerName] = {"status": 1, "socketId" : sId};
       console.log("Current player: " + JSON.stringify(players[playerName]));
       Object.keys(socketsOfClients).forEach(function(oldSocketId){
@@ -67,6 +65,7 @@
           }
           delete clients[socketsOfClients[sId]];
           delete socketsOfClients[sId];
+		  players[playerId].status = 0;
         }
       }
       catch (err) {
@@ -174,13 +173,12 @@
         console.log("game saved with: "  + JSON.stringify(gameToSave));
         dataToSend.notice = "startGame";
         dataToSend.data = obj;
-         var playerIds = gameToSave.playerIds;
+         //var playerIds = gameToSave.playerIds;
         // var roundNum = gameToSave.roundNum;
-         console.log(gameToSave +"---"+playerIds);
+        // console.log(gameToSave +"---"+playerIds);
          // var sockets = new Array();
          try{
-          var i=0;
-          playerIds.forEach(function(playerId){
+          gameToSave.playerIds.forEach(function(playerId){
             players[playerId].status = 2;
             currentGameOfPlayer[playerId] = _id;
             app_server.sendMsgToClient(clients[playerId], dataToSend);
@@ -208,17 +206,19 @@
          numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
          console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
          console.log("Found game: " +JSON.stringify(games[_id]));
+		 if(games[_id].passedRound[games[_id].currRound] == undefined)
+			games[_id].passedRound[games[_id].currRound] = false;
          try{
           games[_id].playerIds.forEach(function(playerId){
             if(playerId != obj.playerAnswer){
                var dataToSend = {};
                dataToSend.notice = obj.type;
                dataToSend.data = obj;
-                sendMessageToAPlayer(playerId, dataToSend);
+               sendMessageToAPlayer(playerId, dataToSend);
             }
           });
-          if(obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length) {
-        
+          if(games[_id].passedRound[games[_id].currRound] == false && (obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length)) {
+			games[_id].passedRound[games[_id].currRound] = true;
             //gameRounds[_id] = gameRounds[_id] - 1;
 			games[_id].currRound = games[_id].currRound+1;
             numberOfPlayerAnswer[_id]= 0;
