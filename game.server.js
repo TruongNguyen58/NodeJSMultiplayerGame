@@ -192,9 +192,10 @@
         // gameRounds[_id] = roundNum;
         // console.log("GameRound: " + JSON.stringify(gameRounds));
          numberOfPlayerAnswer[_id] = 0;
+		 games[_id].passedRound = {};
          setTimeout(function() {
            recordIntervals[_id] = startIntervalTimer(games[_id], 10,_id);
-          }, 1*1000);
+          }, 3*1000);
     }; //game_server.confirmJoinGame
 
     game_server.onPlayerAnswer = function(msg) {
