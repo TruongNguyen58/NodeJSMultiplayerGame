@@ -228,6 +228,10 @@
             if(games[_id].currRound < games[_id].roundNum){
               console.log("Request next round");
               sendRequestNextRoundToAll(games[_id]);
+			  if(typeof recordIntervals[_id] != undefined){
+				 clearInterval(recordIntervals[_id]);
+				 delete recordIntervals[_id];
+			  }
               recordIntervals[_id] = startIntervalTimer(games[_id], 10, _id);
 			} 
 			else {
@@ -277,7 +281,8 @@
         var count = 1;
         var interval = setInterval(function(){
            //gameRounds[_id] = gameRounds[_id] - 1;
-		   games[_id].currRound = games[_id].currRound+1;
+		   if(typeof games[_id] != undefined){
+		    games[_id].currRound = games[_id].currRound+1;
             if(games[_id].currRound < games[_id].roundNum){
               var end_time = new Date();
               var dif = end_time.getTime() - start_time.getTime();
@@ -289,6 +294,7 @@
               clearInterval(this);
               endgame(games[_id], _id);
             }
+		   }
         }, timerInterval*1000);
         return interval;
       } 
