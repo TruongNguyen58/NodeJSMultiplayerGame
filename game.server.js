@@ -205,10 +205,12 @@
       if(typeof games[_id] != undefined) {
          var dataToSend = {};
          numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
-         console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
+        // console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
          console.log("Found game: " +JSON.stringify(games[_id]));
+		  console.log("typeof games[_id].passedRound[games[_id].currRound]" +JSON.stringify(games[_id].passedRound[games[_id].currRound]);
 		 if(typeof games[_id].passedRound[games[_id].currRound] == undefined){
-			games[_id].passedRound[games[_id].currRound] = false;
+		  games[_id].passedRound.splice(games[_id].currRound, 0, false);
+			//games[_id].passedRound[games[_id].currRound] = false;
 		 }
 			
          try{
@@ -221,8 +223,9 @@
             }
           });
           if(games[_id].passedRound[games[_id].currRound] == false && (obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length)) {
-			games[_id].passedRound[games[_id].currRound] = true;
+			//games[_id].passedRound[games[_id].currRound] = true;
             //gameRounds[_id] = gameRounds[_id] - 1;
+			games[_id].passedRound.splice(games[_id].currRound, 0, true);
 			games[_id].currRound = games[_id].currRound+1;
             numberOfPlayerAnswer[_id]= 0;
             clearInterval(recordIntervals[_id]);
