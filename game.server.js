@@ -65,7 +65,7 @@
           }
           delete clients[socketsOfClients[sId]];
           delete socketsOfClients[sId];
-		  players[playerId].status = 0;
+		  delete players[playerId];
         }
       }
       catch (err) {
@@ -192,7 +192,7 @@
         // gameRounds[_id] = roundNum;
         // console.log("GameRound: " + JSON.stringify(gameRounds));
          numberOfPlayerAnswer[_id] = 0;
-		 games[_id].passedRound = {};
+		 games[_id].passedRound = new Array();
          setTimeout(function() {
            recordIntervals[_id] = startIntervalTimer(games[_id], 10,_id);
           }, 3*1000);
@@ -207,8 +207,10 @@
          numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
          console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
          console.log("Found game: " +JSON.stringify(games[_id]));
-		 if(typeof games[_id].passedRound[games[_id].currRound] == undefined)
+		 if(typeof games[_id].passedRound[games[_id].currRound] == undefined){
 			games[_id].passedRound[games[_id].currRound] = false;
+		 }
+			
          try{
           games[_id].playerIds.forEach(function(playerId){
             if(playerId != obj.playerAnswer){
