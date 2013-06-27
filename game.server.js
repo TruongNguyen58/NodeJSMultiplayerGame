@@ -207,7 +207,7 @@
          numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
         // console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
          console.log("Found game: " +JSON.stringify(games[_id]));
-		  console.log("typeof games[_id].passedRound[games[_id].currRound]" +JSON.stringify(games[_id].passedRound[games[_id].currRound]);
+		  console.log("typeof games[_id].passedRound[games[_id].currRound]" +JSON.stringify(games[_id].passedRound[games[_id].currRound]));
 		 if(typeof games[_id].passedRound[games[_id].currRound] == undefined){
 		  games[_id].passedRound.splice(games[_id].currRound, 0, false);
 			//games[_id].passedRound[games[_id].currRound] = false;
