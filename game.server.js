@@ -21,7 +21,6 @@
     var games = {};
     var players = {};
     var currentGameOfPlayer = {};
-	var passedRound = {};
     var
         game_server = module.exports,
         app_server = require('./app.js'),
@@ -193,7 +192,7 @@
         // gameRounds[_id] = roundNum;
         // console.log("GameRound: " + JSON.stringify(gameRounds));
          numberOfPlayerAnswer[_id] = 0;
-		 passedRound[_id] = [];
+		 games[_id].passedRound = {};
          setTimeout(function() {
            recordIntervals[_id] = startIntervalTimer(games[_id], 10,_id);
           }, 3*1000);
@@ -206,13 +205,10 @@
       if(typeof games[_id] != undefined) {
          var dataToSend = {};
          numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
-        // console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
+         console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
          console.log("Found game: " +JSON.stringify(games[_id]));
-		  console.log("typeof passedRound[" +games[_id].currRound + "]"  +JSON.stringify(passedRound[_id]));
-		 if(typeof passedRound[_id][games[_id].currRound] == undefined){
-			passedRound[_id].splice(games[_id].currRound, 0, false);
-		 }
-			
+		 if(typeof games[_id].passedRound[games[_id].currRound] == undefined)
+			games[_id].passedRound[games[_id].currRound] = 'false';
          try{
           games[_id].playerIds.forEach(function(playerId){
             if(playerId != obj.playerAnswer){
@@ -222,8 +218,9 @@
                sendMessageToAPlayer(playerId, dataToSend);
             }
           });
-          if(passedRound[_id][games[_id].currRound] == false && (obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length)) {
-			passedRound[_id].splice(games[_id].currRound, 0, true);
+          if(games[_id].passedRound[games[_id].currRound] == 'false' && (obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length)) {
+			games[_id].passedRound[games[_id].currRound] = 'true';
+            //gameRounds[_id] = gameRounds[_id] - 1;
 			games[_id].currRound = games[_id].currRound+1;
             numberOfPlayerAnswer[_id]= 0;
             clearInterval(recordIntervals[_id]);
