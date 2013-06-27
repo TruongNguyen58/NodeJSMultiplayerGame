@@ -202,13 +202,14 @@
       console.log(msg);
       var obj = JSON.parse(msg);
       var _id = obj.gameId;
+	  var round = obj.round;
       if(typeof games[_id] != undefined) {
          var dataToSend = {};
          numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
          console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
          console.log("Found game: " +JSON.stringify(games[_id]));
-		 if(games[_id].passedRound[games[_id].currRound] != true)
-			games[_id].passedRound[games[_id].currRound] = false;
+		 if(games[_id].passedRound[round] != true)
+			games[_id].passedRound[round] = false;
          try{
           games[_id].playerIds.forEach(function(playerId){
             if(playerId != obj.playerAnswer){
@@ -218,8 +219,8 @@
                sendMessageToAPlayer(playerId, dataToSend);
             }
           });
-          if(games[_id].passedRound[games[_id].currRound] == false && (obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length)) {
-			games[_id].passedRound[games[_id].currRound] = true;
+          if(games[_id].passedRound[round] == false && (obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length)) {
+			games[_id].passedRound[round] = true;
             //gameRounds[_id] = gameRounds[_id] - 1;
 			games[_id].currRound = games[_id].currRound+1;
             numberOfPlayerAnswer[_id]= 0;
