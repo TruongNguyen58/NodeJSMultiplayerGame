@@ -109,7 +109,7 @@ io.sockets.on('connection', function(socket) {
 
 app_server.sendMsgToClient = function(sId, msg) {
   try{
-    console.log("sendMsgToClient: " + sId + " with msg: " + JSON.stringify(msg));
+   // console.log("sendMsgToClient: " + sId + " with msg: " + JSON.stringify(msg));
      io.sockets.sockets[sId].emit('message', msg);
   }
   catch(err) {

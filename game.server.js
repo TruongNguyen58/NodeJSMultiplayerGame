@@ -277,11 +277,10 @@
     function startIntervalTimer(_id, timerInterval) {
        if(games.hasOwnProperty(_id)){
          var start_time = new Date();
-        //console.log("Starting " + timerInterval+ " second interval, stopperd after " + gameRounds[_id]+ " th tick");
         var count = 1;
         var interval = setInterval(function(){
 		try{
-		  games[_id].currRound = games[_id].currRound+1;
+			games[_id].currRound = games[_id].currRound+1;
             if(games[_id].currRound < games[_id].roundNum){
               var end_time = new Date();
               var dif = end_time.getTime() - start_time.getTime();
@@ -371,7 +370,6 @@
     }
 
     function sendMessageToAll(game, msg) {
-      console.log(JSON.stringify(game));
       if(typeof game != undefined) {
         try{
           game.playerIds.forEach(function(playerId){
