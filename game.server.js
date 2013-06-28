@@ -58,19 +58,20 @@
       try{
 	  var i = 0;
 	  console.log((i++) + "")
-        if(socketsOfClients[sId] != undefined) {
+        if(typeof socketsOfClients[sId] != undefined) {
 		  console.log((i++) + "")
           console.log("Player: " + clients[socketsOfClients[sId]]+ " playerDisconnect game");
 		    console.log((i++) + "")
+			console.log("currentGameOfPlayer: " +JSON.stringify(currentGameOfPlayer));
           if(currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
 		    console.log((i++) + "")
             var gameId = currentGameOfPlayer[socketsOfClients[sId]];
 			  console.log((i++) + "")
-            var dt = {};
+            var data = {};
 			 console.log((i++) + "")
-			dt.player = socketsOfClients[sId];
+			data.player = socketsOfClients[sId];
 			  console.log((i++) + "")
-            endWhenPlayerQuitGame(games[gameId], gameId, "playerQuitGame", dt)
+            endWhenPlayerQuitGame(games[gameId], gameId, "playerQuitGame", data)
 			  console.log((i++) + "")
           }
           delete clients[socketsOfClients[sId]];
@@ -356,8 +357,10 @@
           //  delete gameRounds[_id];
             console.log(JSON.stringify(games));
             games[_id].playerIds.forEach(function(playerId){
-              if(typeof currentGameOfPlayer[playerId] != undefined)
+              if(typeof currentGameOfPlayer[playerId] != undefined){
+			  console.log("delete currentGameOfPlayer: " +JSON.stringify(currentGameOfPlayer));
                 delete currentGameOfPlayer[playerId];
+				}
               if(players[playerId].status  == 2 )
                players[playerId].status = 1;
             });
