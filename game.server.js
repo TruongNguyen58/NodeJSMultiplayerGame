@@ -76,12 +76,13 @@
             endWhenPlayerQuitGame(games[gameId], gameId, "playerQuitGame", data)
 			  console.log((i++) + "")
           }
+		  delete players[socketsOfClients[sId]];
+		    console.log((i++) + "x")
           delete clients[socketsOfClients[sId]];
 		    console.log((i++) + "x")
           delete socketsOfClients[sId];
 		    console.log((i++) + "x")
-		  delete players[playerId];
-		    console.log((i++) + "x")
+		  
         }
       }
       catch (err) {
