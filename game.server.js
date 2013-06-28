@@ -196,7 +196,7 @@
 		
 		 numberOfPlayerAnswer[_id] = 0;
 		 games[_id].passedRound = {};
-		 if(!currentGameOfPlayer.hasOwnProperty(socketsOfClients[_id])){
+		 if(currentGameOfPlayer.hasOwnProperty(socketsOfClients[_id])){
 			clearInterval(recordIntervals[_id]);
 		 }
 		 setTimeout(function() {
