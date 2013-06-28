@@ -38,6 +38,7 @@
       // Does not exist ... so, proceed
       clients[playerName] = sId;
       if(players.hasOwnProperty(playerName)) {
+		console.log("players.hasOwnProperty(playerName)");
         delete players[playerName];
       }
       players[playerName] = {"status": 1, "socketId" : sId};
