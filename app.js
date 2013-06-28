@@ -76,31 +76,36 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('request', function(msg) {
     var obj = JSON.parse(msg);
-    console.log("Receive request from cilent: " +msg);
-    if(obj.type == "findGame") {
-      game_server.findGame(msg);
-    }
-    else if(obj.type == "confirmJoinGame") {
-      game_server.confirmJoinGame(msg);
-    }
-    else if(obj.type == "startGame") {
-      game_server.startGame(socket.id, msg);
-    }
-     else if(obj.type == "playerAnswer") {
-      game_server.onPlayerAnswer(msg);
-    }
-     else if(obj.type == "onlinePlayers") {
-      game_server.getAvailablePlayers(socket.id);
-    }
-    else if(obj.type == "invite") {
-      game_server.inviteToGame(socket.id, msg);
-    }
-     else if(obj.type == "requestEndGame") {
-      game_server.onReceiveRqEndGame(msg);
-    }
-    else if(obj.type == "playerQuitGame") {
-      game_server.onUserQuitGame(socket.id);
-    }
+   // console.log("Receive request from cilent: " +msg);
+   try{
+	   if(obj.type == "findGame") {
+		  game_server.findGame(msg);
+		}
+		else if(obj.type == "confirmJoinGame") {
+		  game_server.confirmJoinGame(msg);
+		}
+		else if(obj.type == "startGame") {
+		  game_server.startGame(socket.id, msg);
+		}
+		 else if(obj.type == "playerAnswer") {
+		  game_server.onPlayerAnswer(msg);
+		}
+		 else if(obj.type == "onlinePlayers") {
+		  game_server.getAvailablePlayers(socket.id);
+		}
+		else if(obj.type == "invite") {
+		  game_server.inviteToGame(socket.id, msg);
+		}
+		 else if(obj.type == "requestEndGame") {
+		  game_server.onReceiveRqEndGame(msg);
+		}
+		else if(obj.type == "playerQuitGame") {
+		  game_server.onUserQuitGame(socket.id);
+		}
+   }
+   catch (err) {
+   }
+    
   });
   socket.on('disconnect', function() {
     game_server.onUserDisconnect(socket.id);
