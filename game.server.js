@@ -58,12 +58,12 @@
       try{
 	  var i = 0;
 	  console.log((i++) + "")
-        if(typeof socketsOfClients[sId] != undefined) {
+        if(socketsOfClients[sId] != 'undefined') {
 		  console.log((i++) + "")
           console.log("Player: " + clients[socketsOfClients[sId]]+ " playerDisconnect game");
 		    console.log((i++) + "")
 			console.log("currentGameOfPlayer: " +JSON.stringify(currentGameOfPlayer));
-          if(typeof currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
+          if(currentGameOfPlayer[socketsOfClients[sId]] != 'undefined') {
 		    console.log((i++) + "")
             var gameId = currentGameOfPlayer[socketsOfClients[sId]];
 			  console.log((i++) + "")
