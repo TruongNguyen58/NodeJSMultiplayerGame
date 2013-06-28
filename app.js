@@ -123,6 +123,17 @@ app_server.sendMsgToClient = function(sId, msg) {
  
 };
 
+app_server.sendToClient = function(sId, notice, msg) {
+  try{
+   // console.log("sendMsgToClient: " + sId + " with msg: " + JSON.stringify(msg));
+     io.sockets.sockets[sId].emit(notice, msg);
+  }
+  catch(err) {
+    console.log("Error: " + JSON.stringify(err));
+  }
+ 
+};
+
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 

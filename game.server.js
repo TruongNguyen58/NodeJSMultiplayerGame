@@ -13,6 +13,7 @@
   var TYPE_PLAYER_DISCONNECT = "playerDisconnect";
   var TYPE_PLAYER_RECONNECTED = "playerReconnect";
   var TYPE_ONLINE_PLAYERS = "onlinePlayers";
+   var TYPE_CONNECTED = "userJoined";
   var hasOwnProperty = Object.prototype.hasOwnProperty;
 
     var recordIntervals = {};
@@ -30,6 +31,7 @@
     game_server.setUser = function(sId, playerName) {
         console.log("begin set user");
         onUserConnect(sId, playerName);
+		app_server.sendToClient(sId, TYPE_CONNECTED, {});
     };
 
     function onUserConnect(sId, playerName) {
