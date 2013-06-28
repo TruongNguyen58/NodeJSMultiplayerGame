@@ -58,31 +58,19 @@
       
       try{
 		var i = 0;
-		console.log((i++) + "")
 		//ad.hasOwnProperty(prop)
         if(socketsOfClients.hasOwnProperty(sId)) {
-		  console.log((i++) + "")
-          console.log("Player: " + socketsOfClients[sId]+ " Disconnect game");
-		    console.log((i++) + "")
+			console.log("Player: " + socketsOfClients[sId]+ " Disconnect game");
 			console.log("currentGameOfPlayer: " +JSON.stringify(currentGameOfPlayer));
-          if(currentGameOfPlayer.hasOwnProperty(socketsOfClients[sId])) {
-		    console.log((i++) + "")
-            var gameId = currentGameOfPlayer[socketsOfClients[sId]];
-			  console.log((i++) + "")
-            var data = {};
-			 console.log((i++) + "")
-			data.player = socketsOfClients[sId];
-			  console.log((i++) + "")
-            endWhenPlayerQuitGame(games[gameId], gameId, "playerQuitGame", data)
-			  console.log((i++) + "")
-          }
-		  delete players[socketsOfClients[sId]];
-		    console.log((i++) + "x")
-          delete clients[socketsOfClients[sId]];
-		    console.log((i++) + "x")
-          delete socketsOfClients[sId];
-		    console.log((i++) + "x")
-		  
+			if(currentGameOfPlayer.hasOwnProperty(socketsOfClients[sId])) {
+				var gameId = currentGameOfPlayer[socketsOfClients[sId]];
+				var data = {};
+				data.player = socketsOfClients[sId];
+				endWhenPlayerQuitGame(games[gameId], gameId, "playerQuitGame", data)
+			}
+			delete players[socketsOfClients[sId]];
+			delete clients[socketsOfClients[sId]];
+			delete socketsOfClients[sId];
         }
       }
       catch (err) {
