@@ -13,6 +13,7 @@
   var TYPE_PLAYER_DISCONNECT = "playerDisconnect";
   var TYPE_PLAYER_RECONNECTED = "playerReconnect";
   var TYPE_ONLINE_PLAYERS = "onlinePlayers";
+  var hasOwnProperty = Object.prototype.hasOwnProperty;
 
     var recordIntervals = {};
     var numberOfPlayerAnswer = {};
@@ -76,11 +77,11 @@
 			  console.log((i++) + "")
           }
           delete clients[socketsOfClients[sId]];
-		    console.log((i++) + "")
+		    console.log((i++) + "x")
           delete socketsOfClients[sId];
-		    console.log((i++) + "")
+		    console.log((i++) + "x")
 		  delete players[playerId];
-		    console.log((i++) + "")
+		    console.log((i++) + "x")
         }
       }
       catch (err) {
