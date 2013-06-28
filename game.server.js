@@ -58,12 +58,13 @@
       try{
 		var i = 0;
 		console.log((i++) + "")
-        if(sId in socketsOfClients) {
+		//ad.hasOwnProperty(prop)
+        if(socketsOfClients.hasOwnProperty(sId)) {
 		  console.log((i++) + "")
-          console.log("Player: " + clients[socketsOfClients[sId]]+ " playerDisconnect game");
+          console.log("Player: " + socketsOfClients[sId]+ " playerDisconnect game");
 		    console.log((i++) + "")
 			console.log("currentGameOfPlayer: " +JSON.stringify(currentGameOfPlayer));
-          if(socketsOfClients[sId] in currentGameOfPlayer) {
+          if(currentGameOfPlayer.hasOwnProperty(socketsOfClients[sId])) {
 		    console.log((i++) + "")
             var gameId = currentGameOfPlayer[socketsOfClients[sId]];
 			  console.log((i++) + "")
