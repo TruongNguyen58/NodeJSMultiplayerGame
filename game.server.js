@@ -66,11 +66,11 @@
 		    console.log((i++) + "")
             var gameId = currentGameOfPlayer[socketsOfClients[sId]];
 			  console.log((i++) + "")
-            var data = {};
+            var dt = {};
 			 console.log((i++) + "")
-			data.player = socketsOfClients[sId];
+			dt.player = socketsOfClients[sId];
 			  console.log((i++) + "")
-            endWhenPlayerQuitGame(games[gameId], gameId, "playerQuitGame", data)
+            endWhenPlayerQuitGame(games[gameId], gameId, "playerQuitGame", dt)
 			  console.log((i++) + "")
           }
           delete clients[socketsOfClients[sId]];
