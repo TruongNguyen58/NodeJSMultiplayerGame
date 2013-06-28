@@ -280,8 +280,8 @@
         //console.log("Starting " + timerInterval+ " second interval, stopperd after " + gameRounds[_id]+ " th tick");
         var count = 1;
         var interval = setInterval(function(){
-           //gameRounds[_id] = gameRounds[_id] - 1;
-		    games[_id].currRound = games[_id].currRound+1;
+		try{
+		  games[_id].currRound = games[_id].currRound+1;
             if(games[_id].currRound < games[_id].roundNum){
               var end_time = new Date();
               var dif = end_time.getTime() - start_time.getTime();
@@ -293,6 +293,9 @@
               clearInterval(this);
               endgame(_id);
             }
+		}
+		catch (err) {
+		}
         }, timerInterval*1000);
         return interval;
       } 
