@@ -66,7 +66,9 @@
 		    console.log((i++) + "")
             var gameId = currentGameOfPlayer[socketsOfClients[sId]];
 			  console.log((i++) + "")
-            var data = {"player" : socketsOfClients[sId]};
+            var data = {};
+			 console.log((i++) + "")
+			data.player = socketsOfClients[sId];
 			  console.log((i++) + "")
             endWhenPlayerQuitGame(games[gameId], gameId, "playerQuitGame", data)
 			  console.log((i++) + "")
@@ -90,7 +92,8 @@
         if(socketsOfClients[sId] != undefined) {
           if(currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
             var gameId = currentGameOfPlayer[socketsOfClients[sId]];
-            var data = {"player" : socketsOfClients[sId]};
+            var data = {};
+			data.player = socketsOfClients[sId];
             endWhenPlayerQuitGame(games[gameId], gameId, "playerQuitGame", data)
           }
         }
@@ -321,7 +324,7 @@
       setTimeout(function() {
         try{
            delete recordIntervals[_id];
-            delete numberOfPlayerAnswer[_id];
+           delete numberOfPlayerAnswer[_id];
             //delete gameRounds[_id];
             console.log(JSON.stringify(games));
             games[_id].playerIds.forEach(function(playerId){
