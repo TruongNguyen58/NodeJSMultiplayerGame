@@ -56,16 +56,27 @@
     game_server.onUserDisconnect = function(sId) {
       
       try{
+	  var i = 0;
+	  console.log((i++) + "")
         if(socketsOfClients[sId] != undefined) {
+		  console.log((i++) + "")
           console.log("Player: " + clients[socketsOfClients[sId]]+ " playerDisconnect game");
+		    console.log((i++) + "")
           if(currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
+		    console.log((i++) + "")
             var gameId = currentGameOfPlayer[socketsOfClients[sId]];
+			  console.log((i++) + "")
             var data = {"player" : socketsOfClients[sId]};
+			  console.log((i++) + "")
             endWhenPlayerQuitGame(games[gameId], gameId, "playerQuitGame", data)
+			  console.log((i++) + "")
           }
           delete clients[socketsOfClients[sId]];
+		    console.log((i++) + "")
           delete socketsOfClients[sId];
+		    console.log((i++) + "")
 		  delete players[playerId];
+		    console.log((i++) + "")
         }
       }
       catch (err) {
