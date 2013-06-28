@@ -61,7 +61,7 @@
 		//ad.hasOwnProperty(prop)
         if(socketsOfClients.hasOwnProperty(sId)) {
 		  console.log((i++) + "")
-          console.log("Player: " + socketsOfClients[sId]+ " playerDisconnect game");
+          console.log("Player: " + socketsOfClients[sId]+ " Disconnect game");
 		    console.log((i++) + "")
 			console.log("currentGameOfPlayer: " +JSON.stringify(currentGameOfPlayer));
           if(currentGameOfPlayer.hasOwnProperty(socketsOfClients[sId])) {
