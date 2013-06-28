@@ -63,7 +63,7 @@
           console.log("Player: " + clients[socketsOfClients[sId]]+ " playerDisconnect game");
 		    console.log((i++) + "")
 			console.log("currentGameOfPlayer: " +JSON.stringify(currentGameOfPlayer));
-          if(currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
+          if(typeof currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
 		    console.log((i++) + "")
             var gameId = currentGameOfPlayer[socketsOfClients[sId]];
 			  console.log((i++) + "")
@@ -90,8 +90,8 @@
     game_server.onUserQuitGame = function(sId) {
        console.log("Player: " + clients[socketsOfClients[sId]]+ " Quit game");
       try{
-        if(socketsOfClients[sId] != undefined) {
-          if(currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
+        if(typeof socketsOfClients[sId] != undefined) {
+          if(typeof currentGameOfPlayer[socketsOfClients[sId]] != undefined) {
             var gameId = currentGameOfPlayer[socketsOfClients[sId]];
             var data = {};
 			data.player = socketsOfClients[sId];
