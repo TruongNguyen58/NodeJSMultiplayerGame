@@ -172,7 +172,7 @@
     }; //game_server.confirmJoinGame
 
      game_server.startGame = function(_id, msg) {
-	 //games.hasOwnProperty(_id)
+	    if(!games.hasOwnProperty(_id)){
 		var obj = JSON.parse(msg);
 		var gameToSave = JSON.parse(obj.game);
 		var dataToSend = {};
@@ -196,14 +196,13 @@
 		
 		 numberOfPlayerAnswer[_id] = 0;
 		 games[_id].passedRound = {};
-		 if(currentGameOfPlayer.hasOwnProperty(socketsOfClients[_id])){
-			clearInterval(recordIntervals[_id]);
-		 }
+		 //if(currentGameOfPlayer.hasOwnProperty(socketsOfClients[_id])){
+			//clearInterval(recordIntervals[_id]);
+		 //}
 		 setTimeout(function() {
 		   recordIntervals[_id] = startIntervalTimer(_id, 10);
 		 }, 3*1000);
-		 
-		
+		}
     }; //game_server.confirmJoinGame
 
     game_server.onPlayerAnswer = function(msg) {
