@@ -67,13 +67,13 @@ io.configure('development', function(){
    io.set('close timeout', 10); // 24h time out
 });
 
-io.sockets.once('connection', function(socket) {
-  socket.once('setusername', function(playerName) {
+io.sockets.on('connection', function(socket) {
+  socket.on('setusername', function(playerName) {
     console.log("CLIENT:" + socket.id  + " CONNECTED TO SERVER");
     game_server.setUser(socket.id, playerName);
   });
 
-  socket.once('request', function(msg) {
+  socket.on('request', function(msg) {
     var obj = JSON.parse(msg);
    // console.log("Receive request from cilent: " +msg);
    try{
