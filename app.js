@@ -67,13 +67,13 @@ io.configure('development', function(){
    io.set('close timeout', 10); // 24h time out
 });
 
-io.sockets.on('connection', function(socket) {
-  socket.on('setusername', function(playerName) {
+io.sockets.once('connection', function(socket) {
+  socket.once('setusername', function(playerName) {
     console.log("CLIENT:" + socket.id  + " CONNECTED TO SERVER");
     game_server.setUser(socket.id, playerName);
   });
 
-  socket.on('request', function(msg) {
+  socket.once('request', function(msg) {
     var obj = JSON.parse(msg);
    // console.log("Receive request from cilent: " +msg);
    try{
@@ -102,8 +102,7 @@ io.sockets.on('connection', function(socket) {
 		  game_server.onUserQuitGame(socket.id);
 		}
 		else if(obj.type == "playerLogOut") {
-		game_server.onUserDisconnect(socket.id);
-		//  socket.onDisconnect();
+		  socket.onDisconnect();
 		  //socket.server.close();
 		}
    }
