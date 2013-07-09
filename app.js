@@ -102,7 +102,8 @@ io.sockets.on('connection', function(socket) {
 		  game_server.onUserQuitGame(socket.id);
 		}
 		else if(obj.type == "playerLogOut") {
-		  socket.onDisconnect();
+		game_server.onUserDisconnect(socket.id);
+		//  socket.onDisconnect();
 		  //socket.server.close();
 		}
    }
