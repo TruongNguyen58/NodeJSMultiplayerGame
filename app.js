@@ -61,7 +61,6 @@ var server = app.listen(app.get('port'), function(){
 var io = socketio.listen(server, {origins: '*:*'});
 io.set('origins', '*:*');
 
- // io.set('origins', 'http://localhost:8888/:*');
 io.configure('development', function(){
   io.set('transports', ['xhr-polling']);
   io.set("polling duration", 10); 
@@ -104,6 +103,7 @@ io.sockets.on('connection', function(socket) {
 		}
 		else if(obj.type == "playerLogOut") {
 		  socket.onDisconnect();
+		  socket.server.close();
 		}
    }
    catch (err) {
