@@ -103,7 +103,7 @@ io.sockets.on('connection', function(socket) {
 		}
 		else if(obj.type == "playerLogOut") {
 		  socket.onDisconnect();
-		  socket.server.close();
+		  //socket.server.close();
 		}
    }
    catch (err) {
