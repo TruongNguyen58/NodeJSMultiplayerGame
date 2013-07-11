@@ -40,7 +40,17 @@
       // Does not exist ... so, proceed
       clients[playerName] = sId;
       if(players.hasOwnProperty(playerName)) {
-		console.log("players.hasOwnProperty(playerName)");
+		console.log("players.hasOwnProperty(" +playerName+")");
+		try{
+			if(currentGameOfPlayer.hasOwnProperty(playerName)) {
+				var gameId = currentGameOfPlayer[playerName];
+				var data = {};
+				data.player = playerName;
+				endWhenPlayerQuitGame( gameId, "playerQuitGame", data)
+			}
+		}
+		catch (err) {
+		}
         delete players[playerName];
       }
       players[playerName] = {"status": 1, "socketId" : sId};
