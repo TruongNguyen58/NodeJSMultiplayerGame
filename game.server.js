@@ -209,6 +209,14 @@
 		 //if(currentGameOfPlayer.hasOwnProperty(socketsOfClients[_id])){
 			//clearInterval(recordIntervals[_id]);
 		 //}
+     if(recordIntervals.hasOwnProperty(_id)){
+      try{
+        clearInterval(recordIntervals[_id]);
+        delete recordIntervals[_id];
+      }
+      catch{
+      }
+     }
 		 setTimeout(function() {
 		   recordIntervals[_id] = startIntervalTimer(_id, 10);
 		 }, 3*1000);
