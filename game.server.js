@@ -28,13 +28,14 @@
         app_server = require('./app.js'),
         verbose     = true;
 
-    game_server.setUser = function(sId, playerName) {
-        console.log("begin set user");
-        onUserConnect(sId, playerName);
-		app_server.sendToClient(sId, TYPE_CONNECTED, {});
+    game_server.setUser = function(sId, data) {
+      console.log("begin set user");
+      onUserConnect(sId, data);
+	 	  app_server.sendToClient(sId, TYPE_CONNECTED, {});
     };
 
-    function onUserConnect(sId, playerName) {
+    function onUserConnect(sId, playerData) {
+      var playerName = playerData.userName;
       var i =0;
       console.log("User: " +playerName  + " connected with socketID: " + sId);
       // Does not exist ... so, proceed
@@ -53,7 +54,7 @@
 		}
         delete players[playerName];
       }
-      players[playerName] = {"status": 1, "socketId" : sId};
+      players[playerName] = {"status": 1, "socketId" : sId, "appName" : playerData.appName};
       console.log("Current player: " + JSON.stringify(players[playerName]));
       Object.keys(socketsOfClients).forEach(function(oldSocketId){
          console.log("Key: " +oldSocketId + " Value: " + socketsOfClients[oldSocketId] + " PlayerName: " + playerName);
@@ -109,13 +110,13 @@
     };
 
 
-    game_server.getAvailablePlayers = function(sId) {
+    game_server.getAvailablePlayers = function(sId, clientData) {
         setTimeout(function() {
         try{
           var availableUsers = new Array();
           console.log("online users: " + JSON.stringify(players));
           Object.keys(players).forEach(function(userName){
-          if (players[userName].status == 1)
+          if (players[userName].appName == clientData.appName && players[userName].status == 1)
             availableUsers.push(userName);
           });
           console.log('Sending availableUsers to ' + sId);

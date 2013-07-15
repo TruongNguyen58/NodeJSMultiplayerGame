@@ -68,9 +68,9 @@ io.configure('development', function(){
 });
 
 io.sockets.on('connection', function(socket) {
-  socket.on('setusername', function(playerName) {
+  socket.on('setusername', function(data) {
     console.log("CLIENT:" + socket.id  + " CONNECTED TO SERVER");
-    game_server.setUser(socket.id, playerName);
+    game_server.setUser(socket.id, data);
   });
 
   socket.on('request', function(msg) {
@@ -90,10 +90,10 @@ io.sockets.on('connection', function(socket) {
 		  game_server.onPlayerAnswer(msg);
 		}
 		 else if(obj.type == "onlinePlayers") {
-		  game_server.getAvailablePlayers(socket.id);
+		  game_server.getAvailablePlayers(socket.id, obj);
 		}
 		else if(obj.type == "invite") {
-		  game_server.inviteToGame(socket.id, msg);
+		  game_server.inviteToGame(socket.id, obj);
 		}
 		 else if(obj.type == "requestEndGame") {
 		  game_server.onReceiveRqEndGame(msg);
