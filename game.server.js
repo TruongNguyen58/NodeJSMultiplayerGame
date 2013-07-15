@@ -214,7 +214,8 @@
         clearInterval(recordIntervals[_id]);
         delete recordIntervals[_id];
       }
-      catch{
+       catch(err) {
+       console.log("Err: " +JSON.stringify(err));
       }
      }
 		 setTimeout(function() {
