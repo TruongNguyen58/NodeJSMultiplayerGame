@@ -93,7 +93,7 @@ io.sockets.on('connection', function(socket) {
 		  game_server.getAvailablePlayers(socket.id, obj);
 		}
 		else if(obj.type == "invite") {
-		  game_server.inviteToGame(socket.id, obj);
+		  game_server.inviteToGame(socket.id, msg);
 		}
 		 else if(obj.type == "requestEndGame") {
 		  game_server.onReceiveRqEndGame(msg);
