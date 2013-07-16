@@ -335,7 +335,6 @@
 		  dataToSend.notice = notice;
 		  dataToSend.data = data;
 		  sendMessageToAll(games[_id],dataToSend);
-		  setTimeout(function() {
 			try{
 			   delete recordIntervals[_id];
 			   delete numberOfPlayerAnswer[_id];
@@ -352,7 +351,6 @@
 			 catch(err) {
 				 console.log("Error when delete data to endGame: " + JSON.stringify(err));
 			}
-			}, 3*1000); 
 	  }
     }
 
