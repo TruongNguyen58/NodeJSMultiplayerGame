@@ -231,7 +231,7 @@
       var _id = obj.gameId;
 	   var round = obj.round;
 	 //if(round == ) {
-      if(games.hasOwnProperty(_id) && (games.currRound === round)){
+      if(games.hasOwnProperty(_id) && (games[_id].currRound == round)){
         console.log("games.hasOwnProperty(_id) && (games.currRound === round)");
          //var dataToSend = {};
          numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
