@@ -229,47 +229,47 @@
       console.log(msg);
       var obj = JSON.parse(msg);
       var _id = obj.gameId;
-	  var round = obj.round;
-	 //f(socketsOfClients.hasOwnProperty(sId)) {
-      if(games.hasOwnProperty(_id)){
-         var dataToSend = {};
+	   var round = obj.round;
+	 //if(round == ) {
+      if(games.hasOwnProperty(_id) && games.currRound == round){
+         //var dataToSend = {};
          numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
          console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
          console.log("Found game: " +JSON.stringify(games[_id]));
-		 if(games[_id].passedRound[round] != true)
-			games[_id].passedRound[round] = false;
-         try{
-          games[_id].playerIds.forEach(function(playerId){
-            if(playerId != obj.playerAnswer){
-               var dataToSend = {};
-               dataToSend.notice = obj.type;
-               dataToSend.data = obj;
-               sendMessageToAPlayer(playerId, dataToSend);
-            }
-          });
-          if(games[_id].passedRound[round] == false && (obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length)) {
-			games[_id].passedRound[round] = true;
-            //gameRounds[_id] = gameRounds[_id] - 1;
-			games[_id].currRound = games[_id].currRound+1;
-            numberOfPlayerAnswer[_id]= 0;
-            clearInterval(recordIntervals[_id]);
-            //console.log("Game round remain: " + gameRounds[_id]);
-            if(games[_id].currRound < games[_id].roundNum){
-              console.log("Request next round");
-              sendRequestNextRoundToAll(games[_id]);
-			  if(recordIntervals.hasOwnProperty(_id)) {
-				 delete recordIntervals[_id];
-			  }
-              recordIntervals[_id] = startIntervalTimer(_id, 10);
-			} 
-			else {
-				endgame(_id);
-			}
-		  }
-		}
-		catch (err) {
-			console.log("Error when process player answer: " + JSON.stringify(err));
-		}
+    		 if(games[_id].passedRound[round] != true) // undefined or false
+    			games[_id].passedRound[round] = false;
+             try{
+              games[_id].playerIds.forEach(function(playerId){
+                if(playerId != obj.playerAnswer){
+                   var dataToSend = {};
+                   dataToSend.notice = obj.type;
+                   dataToSend.data = obj;
+                   sendMessageToAPlayer(playerId, dataToSend);
+                }
+              });
+              if(games[_id].passedRound[round] == false && (obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length)) {
+    			       games[_id].passedRound[round] = true;
+                //gameRounds[_id] = gameRounds[_id] - 1;
+    			       games[_id].currRound = games[_id].currRound+1;
+                numberOfPlayerAnswer[_id]= 0;
+                clearInterval(recordIntervals[_id]);
+                //console.log("Game round remain: " + gameRounds[_id]);
+                if(games[_id].currRound < games[_id].roundNum){
+                  console.log("Request next round");
+                  sendRequestNextRoundToAll(games[_id]);
+        			  if(recordIntervals.hasOwnProperty(_id)) {
+        				 delete recordIntervals[_id];
+        			  }
+                      recordIntervals[_id] = startIntervalTimer(_id, 10);
+          			} 
+          			else {
+          				endgame(_id);
+          			}
+    		     }
+    		}
+    		catch (err) {
+    			console.log("Error when process player answer: " + JSON.stringify(err));
+    		}
       }
      
       
