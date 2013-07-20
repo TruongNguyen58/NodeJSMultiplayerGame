@@ -14,6 +14,7 @@
   var TYPE_PLAYER_RECONNECTED = "playerReconnect";
   var TYPE_ONLINE_PLAYERS = "onlinePlayers";
    var TYPE_CONNECTED = "userJoined";
+   var intervalTime = 20;
   var hasOwnProperty = Object.prototype.hasOwnProperty;
 
     var recordIntervals = {};
@@ -23,6 +24,7 @@
     var games = {};
     var players = {};
     var currentGameOfPlayer = {};
+
     var
         game_server = module.exports,
         app_server = require('./app.js'),
@@ -220,7 +222,7 @@
       }
      }
 		 setTimeout(function() {
-		   recordIntervals[_id] = startIntervalTimer(_id, 10);
+		   recordIntervals[_id] = startIntervalTimer(_id, intervalTime);
 		 }, 3*1000);
 		//}
     }; //game_server.confirmJoinGame
@@ -261,7 +263,7 @@
         			  if(recordIntervals.hasOwnProperty(_id)) {
         				 delete recordIntervals[_id];
         			  }
-                      recordIntervals[_id] = startIntervalTimer(_id, 10);
+                      recordIntervals[_id] = startIntervalTimer(_id, intervalTime);
           			} 
           			else {
           				endgame(_id);
@@ -271,6 +273,9 @@
     		catch (err) {
     			console.log("Error when process player answer: " + JSON.stringify(err));
     		}
+      }
+      else {
+        console.log(" nonnnnnnnnnnnnnnnn games.hasOwnProperty(_id) && (games.currRound === round) ");
       }
      
       
