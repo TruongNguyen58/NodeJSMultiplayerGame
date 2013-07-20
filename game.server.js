@@ -186,45 +186,42 @@
 
      game_server.startGame = function(_id, msg) {
 	   // if(!games.hasOwnProperty(_id)){
-		var obj = JSON.parse(msg);
-		var gameToSave = JSON.parse(obj.game);
-		var dataToSend = {};
-		console.log("Game before save: " + JSON.stringify(gameToSave));
-		games[_id] = gameToSave;
-		gameToSave.gameId = _id;
-		obj.game = gameToSave;
-		console.log("game saved with: "  + JSON.stringify(gameToSave));
-		dataToSend.notice = "startGame";
-		dataToSend.data = obj;
-		 try{
-		  gameToSave.playerIds.forEach(function(playerId){
-			players[playerId].status = 2;
-			currentGameOfPlayer[playerId] = _id;
-			app_server.sendMsgToClient(clients[playerId], dataToSend);
-		  });
-		 }
-		 catch(err) {
-		   console.log("Err: " +JSON.stringify(err));
-		 }
-		
-		 numberOfPlayerAnswer[_id] = 0;
-		 games[_id].passedRound = {};
-		 //if(currentGameOfPlayer.hasOwnProperty(socketsOfClients[_id])){
-			//clearInterval(recordIntervals[_id]);
-		 //}
-     if(recordIntervals.hasOwnProperty(_id)){
-      try{
-        clearInterval(recordIntervals[_id]);
-        delete recordIntervals[_id];
-      }
-       catch(err) {
-       console.log("Err: " +JSON.stringify(err));
-      }
-     }
-		 setTimeout(function() {
-		   recordIntervals[_id] = startIntervalTimer(_id, intervalTime);
-		 }, 3*1000);
-		//}
+  		var obj = JSON.parse(msg);
+  		var gameToSave = JSON.parse(obj.game);
+  		var dataToSend = {};
+  		console.log("Game before save: " + JSON.stringify(gameToSave));
+  		games[_id] = gameToSave;
+  		gameToSave.gameId = _id;
+  		obj.game = gameToSave;
+  		console.log("game saved with: "  + JSON.stringify(gameToSave));
+  		dataToSend.notice = "startGame";
+  		dataToSend.data = obj;
+  		 try{
+  		  gameToSave.playerIds.forEach(function(playerId){
+  			players[playerId].status = 2;
+  			currentGameOfPlayer[playerId] = _id;
+  			app_server.sendMsgToClient(clients[playerId], dataToSend);
+  		  });
+  		 }
+  		 catch(err) {
+  		   console.log("Err: " +JSON.stringify(err));
+  		 }
+  		
+  		 numberOfPlayerAnswer[_id] = 0;
+  		 games[_id].passedRound = {};
+       if(recordIntervals.hasOwnProperty(_id)){
+        try{
+          clearTimeout(recordIntervals[_id]);
+          delete recordIntervals[_id];
+        }
+         catch(err) {
+         console.log("Err: " +JSON.stringify(err));
+        }
+       }
+  		 setTimeout(function() {
+  		   recordIntervals[_id] = startIntervalTimer(_id, intervalTime);
+  		 }, 3*1000);
+  		//}
     }; //game_server.confirmJoinGame
 
     game_server.onPlayerAnswer = function(msg) {
@@ -251,7 +248,7 @@
                 }
               });
               if(games[_id].passedRound[round] == false && (obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length)) {
-                clearInterval(recordIntervals[_id]);
+                clearTimeout(recordIntervals[_id]);
     			       games[_id].passedRound[round] = true;
                 //gameRounds[_id] = gameRounds[_id] - 1;
     			       games[_id].currRound = games[_id].currRound+1;
@@ -289,7 +286,7 @@
       console.log("Game with id: " + _id + " receive request to end!");
       console.log("Current Games: " + JSON.stringify(games) );
       if(games.hasOwnProperty(_id)){
-        clearInterval(recordIntervals[_id]);
+        clearTimeout(recordIntervals[_id]);
         endgame(_id);
       }
     }; //game_server.onPlayerAnswer
@@ -310,32 +307,34 @@
 
     function startIntervalTimer(_id, timerInterval) {
        if(games.hasOwnProperty(_id)){
-         var start_time = new Date();
+        var start_time = new Date();
         var count = 1;
-        var interval = setInterval(function(){
-		try{
-			games[_id].currRound = games[_id].currRound+1;
+        var interval = setTimeout(function(){
+		    try{
+    			games[_id].currRound = games[_id].currRound+1;
             if(games[_id].currRound < games[_id].roundNum){
               var end_time = new Date();
               var dif = end_time.getTime() - start_time.getTime();
               console.log("Tick no. " + count + " after " + Math.round(dif/1000) + " seconds");
               sendRequestNextRoundToAll(games[_id]);
               count++;
+              delete recordIntervals[_id];
+              recordIntervals[_id] = startIntervalTimer(_id, timerInterval);
             }
             else{
-              clearInterval(interval);
+              clearTimeout(interval);
               endgame(_id);
             }
-		}
-		catch (err) {
-		}
+    		}
+    		catch (err) {
+    		}
         }, timerInterval*1000);
         return interval;
       } 
     }
 
     function endWhenPlayerQuitGame(_id, notice, data) {
-      clearInterval(recordIntervals[_id]);
+      clearTimeout(recordIntervals[_id]);
 	  if(games.hasOwnProperty(_id)){
 		  console.log("End game! zzzzzzzzzzzzzzzzz: " +JSON.stringify(games[_id]));
 		  var dataToSend = {};
