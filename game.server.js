@@ -251,19 +251,19 @@
                 }
               });
               if(games[_id].passedRound[round] == false && (obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length)) {
+                clearInterval(recordIntervals[_id]);
     			       games[_id].passedRound[round] = true;
                 //gameRounds[_id] = gameRounds[_id] - 1;
     			       games[_id].currRound = games[_id].currRound+1;
                 numberOfPlayerAnswer[_id]= 0;
-                clearInterval(recordIntervals[_id]);
                 //console.log("Game round remain: " + gameRounds[_id]);
                 if(games[_id].currRound < games[_id].roundNum){
                   console.log("Request next round");
                   sendRequestNextRoundToAll(games[_id]);
-        			  if(recordIntervals.hasOwnProperty(_id)) {
-        				 delete recordIntervals[_id];
-        			  }
-                      recordIntervals[_id] = startIntervalTimer(_id, intervalTime);
+          			  if(recordIntervals.hasOwnProperty(_id)) {
+          				 delete recordIntervals[_id];
+          			  }
+                  recordIntervals[_id] = startIntervalTimer(_id, intervalTime);
           			} 
           			else {
           				endgame(_id);
