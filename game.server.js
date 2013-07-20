@@ -14,7 +14,7 @@
   var TYPE_PLAYER_RECONNECTED = "playerReconnect";
   var TYPE_ONLINE_PLAYERS = "onlinePlayers";
    var TYPE_CONNECTED = "userJoined";
-   var intervalTime = 20;
+   var intervalTime = 15;
   var hasOwnProperty = Object.prototype.hasOwnProperty;
 
     var recordIntervals = {};

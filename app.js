@@ -63,8 +63,8 @@ io.set('origins', '*:*');
 
 io.configure('development', function(){
   io.set('transports', ['xhr-polling']);
-  io.set("polling duration", 10); 
-   io.set('close timeout', 10); // 24h time out
+  io.set("polling duration", 15); 
+   io.set('close timeout', 15); // 24h time out
 });
 
 io.sockets.on('connection', function(socket) {
