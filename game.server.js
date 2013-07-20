@@ -289,6 +289,7 @@
       console.log("Game with id: " + _id + " receive request to end!");
       console.log("Current Games: " + JSON.stringify(games) );
       if(games.hasOwnProperty(_id)){
+        clearInterval(recordIntervals[_id]);
         endgame(_id);
       }
     }; //game_server.onPlayerAnswer
@@ -322,7 +323,7 @@
               count++;
             }
             else{
-              clearInterval(this);
+              clearInterval(interval);
               endgame(_id);
             }
 		}
@@ -361,32 +362,31 @@
     }
 
     function endgame( _id) {
-      clearInterval(recordIntervals[_id]);
-	  if(games.hasOwnProperty(_id)){
-		console.log("End game! zzzzzzzzzzzzzzzzz: " +JSON.stringify(games[_id]));
-		var dataToSend = {};
-		dataToSend.notice = "endGame";
-		dataToSend.data = {};
-		sendMessageToAll(games[_id],dataToSend);
-		setTimeout(function() {
-        try{
-           delete recordIntervals[_id];
-            delete numberOfPlayerAnswer[_id];
-            console.log(JSON.stringify(games));
-            games[_id].playerIds.forEach(function(playerId){
-               if(currentGameOfPlayer.hasOwnProperty(playerId)){
-					delete currentGameOfPlayer[playerId];
-				}
-              if(players[playerId].status  == 2 )
-               players[playerId].status = 1;
-            });
-            delete games[_id];
-        }
-        catch(err) {
-            console.log("Error when delete data to endGame: " + JSON.stringify(err));
-        } 
-		}, 3*1000); 
-	  }
+  	  if(games.hasOwnProperty(_id)){
+  		console.log("End game! zzzzzzzzzzzzzzzzz: " +JSON.stringify(games[_id]));
+  		var dataToSend = {};
+  		dataToSend.notice = "endGame";
+  		dataToSend.data = {};
+  		sendMessageToAll(games[_id],dataToSend);
+  		setTimeout(function() {
+          try{
+             delete recordIntervals[_id];
+              delete numberOfPlayerAnswer[_id];
+              console.log(JSON.stringify(games));
+              games[_id].playerIds.forEach(function(playerId){
+                 if(currentGameOfPlayer.hasOwnProperty(playerId)){
+  					delete currentGameOfPlayer[playerId];
+  				}
+                if(players[playerId].status  == 2 )
+                 players[playerId].status = 1;
+              });
+              delete games[_id];
+          }
+          catch(err) {
+              console.log("Error when delete data to endGame: " + JSON.stringify(err));
+          } 
+  		}, 3*1000); 
+  	  }
     }
 
     function sendRequestNextRoundToAll(game) {
