@@ -350,6 +350,7 @@
 		  console.log("End game! zzzzzzzzzzzzzzzzz: " +JSON.stringify(games[_id]));
 		  var dataToSend = {};
 		  dataToSend.notice = notice;
+      data.scores = games[_id].scores;
 		  dataToSend.data = data;
 		  sendMessageToAll(games[_id],dataToSend);
 			try{
@@ -376,7 +377,7 @@
   		console.log("End game! zzzzzzzzzzzzzzzzz: " +JSON.stringify(games[_id]));
   		var dataToSend = {};
   		dataToSend.notice = "endGame";
-  		dataToSend.data = {};
+  		dataToSend.data = {"scores" : games[_id].scores};
   		sendMessageToAll(games[_id],dataToSend);
   		setTimeout(function() {
           try{
