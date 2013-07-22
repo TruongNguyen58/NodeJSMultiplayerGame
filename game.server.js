@@ -189,9 +189,9 @@
   		var obj = JSON.parse(msg);
   		var gameToSave = JSON.parse(obj.game);
   		var dataToSend = {};
-      gameToSave.playerIds.forEach(function(playerId){
-        gameToSave.scores.push({playerId:0});
-      });
+      // gameToSave.playerIds.forEach(function(playerId){
+      //   gameToSave.scores.push({playerId:0});
+      // });
   		console.log("Game before save: " + JSON.stringify(gameToSave));
   		games[_id] = gameToSave;
   		gameToSave.gameId = _id;
