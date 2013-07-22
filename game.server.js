@@ -189,14 +189,10 @@
   		var obj = JSON.parse(msg);
   		var gameToSave = JSON.parse(obj.game);
   		var dataToSend = {};
-      // gameToSave.playerIds.forEach(function(playerId){
-      //   gameToSave.scores.push({playerId:0});
-      // });
   		console.log("Game before save: " + JSON.stringify(gameToSave));
   		games[_id] = gameToSave;
   		gameToSave.gameId = _id;
   		obj.game = gameToSave;
-  		console.log("game saved with: "  + JSON.stringify(gameToSave));
   		dataToSend.notice = "startGame";
   		dataToSend.data = obj;
   		 try{
@@ -221,6 +217,12 @@
          console.log("Err: " +JSON.stringify(err));
         }
        }
+        games[_id].playerIds.forEach(function(playerId){
+          var s = {};
+          s[playerId] = 0;
+          games[_id].scores.push(s);
+        });
+        console.log("game saved with: "  + JSON.stringify(games[_id]));
   		 setTimeout(function() {
   		   recordIntervals[_id] = startIntervalTimer(_id, intervalTime);
   		 }, 3*1000);
