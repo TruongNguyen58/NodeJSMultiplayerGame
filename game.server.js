@@ -189,6 +189,9 @@
   		var obj = JSON.parse(msg);
   		var gameToSave = JSON.parse(obj.game);
   		var dataToSend = {};
+      gameToSave.playerIds.forEach(function(playerId){
+        gameToSave.scores[playerId] = 0;
+      });
   		console.log("Game before save: " + JSON.stringify(gameToSave));
   		games[_id] = gameToSave;
   		gameToSave.gameId = _id;
@@ -228,8 +231,7 @@
       console.log(msg);
       var obj = JSON.parse(msg);
       var _id = obj.gameId;
-	   var round = obj.round;
-	 //if(round == ) {
+	    var round = obj.round;
       if(games.hasOwnProperty(_id) && (games[_id].currRound == round)){
         console.log("games.hasOwnProperty(_id) && (games.currRound === round)");
          //var dataToSend = {};
@@ -239,6 +241,10 @@
     		 if(games[_id].passedRound[round] != true) // undefined or false
     			games[_id].passedRound[round] = false;
              try{
+              if(obj.result == 'true')
+                gameToSave.scores[obj.playerAnswer] = gameToSave.scores[obj.playerAnswer] +1;
+              else
+                gameToSave.scores[obj.playerAnswer] = gameToSave.scores[obj.playerAnswer] -1;
               games[_id].playerIds.forEach(function(playerId){
                 if(playerId != obj.playerAnswer){
                    var dataToSend = {};
@@ -273,9 +279,7 @@
       }
       else {
         console.log(" nonnnnnnnnnnnnnnnn games.hasOwnProperty(_id) && (games.currRound === round) ");
-      }
-     
-      
+      }  
     }; //game_server.onPlayerAnswer
 
 
@@ -393,7 +397,7 @@
     //  game.currRound = game.currRound+1;
         var dataToSend = {};
         dataToSend.notice = "nextRound";
-        dataToSend.data = {"round" : game.currRound};
+        dataToSend.data = {"round" : game.currRound, "scores" : game.scores};
         sendMessageToAll(game,dataToSend);
         console.log("game saved: "  + JSON.stringify(game));
      }
