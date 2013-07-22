@@ -190,7 +190,7 @@
   		var gameToSave = JSON.parse(obj.game);
   		var dataToSend = {};
       gameToSave.playerIds.forEach(function(playerId){
-        gameToSave.scores[playerId] = 0;
+        gameToSave.scores.push({playerId:0});
       });
   		console.log("Game before save: " + JSON.stringify(gameToSave));
   		games[_id] = gameToSave;
@@ -241,10 +241,15 @@
     		 if(games[_id].passedRound[round] != true) // undefined or false
     			games[_id].passedRound[round] = false;
              try{
-              if(obj.result == 'true')
-                gameToSave.scores[obj.playerAnswer] = gameToSave.scores[obj.playerAnswer] +1;
-              else
-                gameToSave.scores[obj.playerAnswer] = gameToSave.scores[obj.playerAnswer] -1;
+              for(var i =0;i<games[_id].scores.length;i++) {
+                var playerScore = games[_id].scores[i];
+                if(playerScore.hasOwnProperty(obj.playerAnswer)){
+                  if(obj.result == 'true')
+                    playerScore[obj.playerAnswer] = playerScore[obj.playerAnswer] +1;
+                  else
+                    playerScore[obj.playerAnswer] = playerScore[obj.playerAnswer] -1;
+                }
+              }
               games[_id].playerIds.forEach(function(playerId){
                 if(playerId != obj.playerAnswer){
                    var dataToSend = {};
