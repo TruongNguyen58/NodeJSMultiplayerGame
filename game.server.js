@@ -56,7 +56,7 @@
 		}
         delete players[playerName];
       }
-      players[playerName] = {"status": 1, "socketId" : sId, "appName" : playerData.appName};
+      players[playerName] = {"status": playerData.status, "socketId" : sId, "appName" : playerData.appName};
       console.log("Current player: " + JSON.stringify(players[playerName]));
       Object.keys(socketsOfClients).forEach(function(oldSocketId){
          console.log("Key: " +oldSocketId + " Value: " + socketsOfClients[oldSocketId] + " PlayerName: " + playerName);
@@ -400,8 +400,8 @@
   	  }
     }
 
-    function sendRequestNextRoundToAll(game) {
-     if(typeof game != undefined) {
+    function sendRequestNextRoundToAll(game) {u
+     if(typeof game != undefined) {u
     //  game.currRound = game.currRound+1;
         var dataToSend = {};
         dataToSend.notice = "nextRound";
