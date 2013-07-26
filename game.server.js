@@ -270,6 +270,7 @@
                 if(games[_id].currRound < games[_id].roundNum){
                   console.log("Request next round");
                   sendRequestNextRoundToAll(games[_id]);
+
           			  if(recordIntervals.hasOwnProperty(_id)) {
           				 delete recordIntervals[_id];
           			  }
@@ -400,13 +401,16 @@
   	  }
     }
 
-    function sendRequestNextRoundToAll(game) {u
-     if(typeof game != undefined) {u
+    function sendRequestNextRoundToAll(game) {
+      console.log("sendRequestNextRoundToAll");
+     if(typeof game != undefined) {
     //  game.currRound = game.currRound+1;
         var dataToSend = {};
         dataToSend.notice = "nextRound";
         dataToSend.data = {"round" : game.currRound, "scores" : game.scores};
+         console.log("11111");
         sendMessageToAll(game,dataToSend);
+        console.log("2222");
         console.log("game saved: "  + JSON.stringify(game));
      }
     }
@@ -419,6 +423,7 @@
           });
         }
         catch (err) {
+            console.log("Error when send msg to all");
         }
       } 
     }
