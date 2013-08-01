@@ -114,8 +114,7 @@
 
 
     game_server.getAvailablePlayers = function(sId, obj) {
-        setTimeout(function() {
-        try{
+       try{
           var availableUsers = new Array();
           console.log("online users: " + JSON.stringify(players));
           var i = 0;
@@ -135,9 +134,6 @@
          catch(err) {
              console.log("Error when get getAvailablePlayers: " + JSON.stringify(err));
         }
-       
-      }, 1*1000); 
-      
     }; //game_server.getAvailablePlayers
 
     game_server.findPlayer = function(obj) {
