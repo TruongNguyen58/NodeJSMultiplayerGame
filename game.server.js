@@ -144,8 +144,8 @@
       console.log("findPlayer : " + JSON.stringify(obj));
         var dataToSend = {};
         dataToSend.notice = TYPE_FOUND_PLAYER;
-        console.log('looking for a player for user: ' + obj.data.sender);
-        var playerName = obj.data.player;
+        console.log('looking for a player for user: ' + obj.sender);
+        var playerName = obj.player;
         if (players.hasOwnProperty(playerName)) {
           if(playerName != obj.sender && players[playerName].status == 1) {
             dataToSend.data = {"player":playerName, "available" : true};
@@ -160,7 +160,7 @@
           dataToSend.data = {"player":playerName, "available" : false};
           console.log('not found user: ' + JSON.stringify(playerName));
         }
-        app_server.sendMsgToClient(clients[obj.data.sender], dataToSend);
+        app_server.sendMsgToClient(clients[obj.sender], dataToSend);
     }; //game_server.findPlayer
 
     game_server.findGame = function(obj) {
