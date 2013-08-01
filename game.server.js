@@ -118,9 +118,13 @@
         try{
           var availableUsers = new Array();
           console.log("online users: " + JSON.stringify(players));
+          var i = 0;
           Object.keys(players).forEach(function(userName){
           if (players[userName].appName == obj.appName && players[userName].status == 1)
-            availableUsers.push(userName);
+            if(i<=20){
+               availableUsers.push(userName);
+            }
+            i++;
           });
           console.log('Sending availableUsers to ' + sId);
 
@@ -129,7 +133,7 @@
            
         }
          catch(err) {
-             console.log("Error when delete data to endGame: " + JSON.stringify(err));
+             console.log("Error when get getAvailablePlayers: " + JSON.stringify(err));
         }
        
       }, 1*1000); 
@@ -137,6 +141,7 @@
     }; //game_server.getAvailablePlayers
 
     game_server.findPlayer = function(obj) {
+      console.log("findPlayer : " + JSON.stringify(obj));
         var dataToSend = {};
         dataToSend.notice = TYPE_FOUND_PLAYER;
         console.log('looking for a player for user: ' + obj.data.sender);
