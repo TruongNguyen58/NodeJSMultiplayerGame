@@ -3,6 +3,7 @@
 */
 
   var TYPE_INVITE = "invite";
+  var TYPE_FOUND_PLAYER = "foundPlayer";
    var TYPE_PLAYER_NOT_AVAILABLE = "playerNotAvailable";
   var TYPE_WELLCOME = "wellcome";
   var TYPE_RECEIVE_CONFIRM = "receiveConfirm";
@@ -112,13 +113,13 @@
     };
 
 
-    game_server.getAvailablePlayers = function(sId, clientData) {
+    game_server.getAvailablePlayers = function(sId, obj) {
         setTimeout(function() {
         try{
           var availableUsers = new Array();
           console.log("online users: " + JSON.stringify(players));
           Object.keys(players).forEach(function(userName){
-          if (players[userName].appName == clientData.appName && players[userName].status == 1)
+          if (players[userName].appName == obj.appName && players[userName].status == 1)
             availableUsers.push(userName);
           });
           console.log('Sending availableUsers to ' + sId);
@@ -135,8 +136,29 @@
       
     }; //game_server.getAvailablePlayers
 
-    game_server.findGame = function(msg) {
-        var obj = JSON.parse(msg);
+    game_server.findPlayer = function(obj) {
+        var dataToSend = {};
+        dataToSend.notice = TYPE_FOUND_PLAYER;
+        console.log('looking for a player for user: ' + obj.data.sender);
+        var playerName = obj.data.player;
+        if (players.hasOwnProperty(playerName)) {
+          if(playerName != obj.sender && players[playerName].status == 1) {
+            dataToSend.data = {"player":playerName, "available" : true};
+            console.log('found user: ' + JSON.stringify(playerName));
+          }
+          else {
+            dataToSend.data = {"player":playerName, "available" : false};
+            console.log('player:' + JSON.stringify(playerName) + " not available");
+          }  
+        }
+        else {
+          dataToSend.data = {"player":playerName, "available" : false};
+          console.log('not found user: ' + JSON.stringify(playerName));
+        }
+        app_server.sendMsgToClient(clients[obj.data.sender], dataToSend);
+    }; //game_server.findPlayer
+
+    game_server.findGame = function(obj) {
         var dataToSend = {};
         console.log('looking for a game for user: ' + obj.data.sender);
         for (var playerName in players) {
@@ -153,8 +175,7 @@
         }
     }; //game_server.findGame
 
-    game_server.inviteToGame = function(sId, msg) {
-        var obj = JSON.parse(msg);
+    game_server.inviteToGame = function(sId, obj) {
         var dataToSend = {};
         console.log('looking for a game for user: ' + obj.data.sender);
         obj.data.friends.forEach(function(playerId){
@@ -174,9 +195,8 @@
        
     }; //game_server.inviteToGame
 
-    game_server.confirmJoinGame = function(msg) {
+    game_server.confirmJoinGame = function(obj) {
         console.log("Available user: " + JSON.stringify(clients));
-        var obj = JSON.parse(msg);
         var dataToSend = {};
         console.log('send confirm to sender: ' + obj.sender);
         dataToSend.notice = "receiveConfirm"
@@ -184,9 +204,8 @@
         app_server.sendMsgToClient(clients[obj.sender], dataToSend);
     }; //game_server.confirmJoinGame
 
-     game_server.startGame = function(_id, msg) {
+     game_server.startGame = function(_id, obj) {
 	   // if(!games.hasOwnProperty(_id)){
-  		var obj = JSON.parse(msg);
   		var gameToSave = JSON.parse(obj.game);
   		var dataToSend = {};
   		console.log("Game before save: " + JSON.stringify(gameToSave));
@@ -229,9 +248,7 @@
   		//}
     }; //game_server.confirmJoinGame
 
-    game_server.onPlayerAnswer = function(msg) {
-      console.log(msg);
-      var obj = JSON.parse(msg);
+    game_server.onPlayerAnswer = function(obj) {
       var _id = obj.gameId;
 	    var round = obj.round;
       if(games.hasOwnProperty(_id) && (games[_id].currRound == round)){
@@ -291,9 +308,7 @@
     }; //game_server.onPlayerAnswer
 
 
-    game_server.onReceiveRqEndGame = function(msg) {
-      console.log(msg);
-      var obj = JSON.parse(msg);
+    game_server.onReceiveRqEndGame = function(obj) {
       var _id = obj.gameId;
       console.log("Game with id: " + _id + " receive request to end!");
       console.log("Current Games: " + JSON.stringify(games) );

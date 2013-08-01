@@ -77,33 +77,35 @@ io.sockets.on('connection', function(socket) {
     var obj = JSON.parse(msg);
    // console.log("Receive request from cilent: " +msg);
    try{
-	   if(obj.type == "findGame") {
-		  game_server.findGame(msg);
+	  if(obj.type == "findGame") {
+		  game_server.findGame(obj);
 		}
+    else if(obj.type == "findPlayer") {
+      game_server.findPlayer(obj);
+    }
 		else if(obj.type == "confirmJoinGame") {
-		  game_server.confirmJoinGame(msg);
+		  game_server.confirmJoinGame(obj);
 		}
 		else if(obj.type == "startGame") {
-		  game_server.startGame(socket.id, msg);
+		  game_server.startGame(socket.id, obj);
 		}
 		 else if(obj.type == "playerAnswer") {
-		  game_server.onPlayerAnswer(msg);
+		  game_server.onPlayerAnswer(obj);
 		}
 		 else if(obj.type == "onlinePlayers") {
 		  game_server.getAvailablePlayers(socket.id, obj);
 		}
 		else if(obj.type == "invite") {
-		  game_server.inviteToGame(socket.id, msg);
+		  game_server.inviteToGame(socket.id, obj);
 		}
 		 else if(obj.type == "requestEndGame") {
-		  game_server.onReceiveRqEndGame(msg);
+		  game_server.onReceiveRqEndGame(obj);
 		}
 		else if(obj.type == "playerQuitGame") {
 		  game_server.onUserQuitGame(socket.id);
 		}
 		else if(obj.type == "playerLogOut") {
 		  socket.onDisconnect();
-		  //socket.server.close();
 		}
    }
    catch (err) {
