@@ -287,15 +287,19 @@
                 //console.log("Game round remain: " + gameRounds[_id]);
                 if(games[_id].currRound < games[_id].roundNum){
                   console.log("Request next round");
-                  sendRequestNextRoundToAll(games[_id]);
-
-          			  if(recordIntervals.hasOwnProperty(_id)) {
-          				 delete recordIntervals[_id];
-          			  }
-                  recordIntervals[_id] = startIntervalTimer(_id, intervalTime);
+                  setTimeout(function() {
+                    sendRequestNextRoundToAll(games[_id]);
+                    if(recordIntervals.hasOwnProperty(_id)) {
+                     delete recordIntervals[_id];
+                    }
+                    recordIntervals[_id] = startIntervalTimer(_id, intervalTime);
+                  }, 2*1000);
           			} 
           			else {
-          				endgame(_id);
+                  setTimeout(function() {
+                    endgame(_id);
+                  }, 2*1000);
+          				
           			}
     		     }
     		}
@@ -419,16 +423,13 @@
 
     function sendRequestNextRoundToAll(game) {
       console.log("sendRequestNextRoundToAll");
-     if(typeof game != undefined) {
-    //  game.currRound = game.currRound+1;
-        var dataToSend = {};
-        dataToSend.notice = "nextRound";
-        dataToSend.data = {"round" : game.currRound, "scores" : game.scores};
-         console.log("11111");
-        sendMessageToAll(game,dataToSend);
-        console.log("2222");
-        console.log("game saved: "  + JSON.stringify(game));
-     }
+       if(typeof game != undefined) {
+          var dataToSend = {};
+          dataToSend.notice = "nextRound";
+          dataToSend.data = {"round" : game.currRound, "scores" : game.scores};
+          sendMessageToAll(game,dataToSend);
+          console.log("game saved: "  + JSON.stringify(game));
+       }
     }
 
     function sendMessageToAll(game, msg) {
