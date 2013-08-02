@@ -348,6 +348,7 @@
               var end_time = new Date();
               var dif = end_time.getTime() - start_time.getTime();
               console.log("Tick no. " + count + " after " + Math.round(dif/1000) + " seconds");
+              numberOfPlayerAnswer[_id]= 0;
               sendRequestNextRoundToAll(games[_id]);
               count++;
               delete recordIntervals[_id];
