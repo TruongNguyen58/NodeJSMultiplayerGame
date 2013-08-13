@@ -50,7 +50,9 @@ app.configure('development', function(){
 
 app.get('/', routes.index);
 app.get('/chat', chat.main);
-app.get('/users', user.list);
+app.get('/users', function(req, res) {
+  game_server.users(req, res);
+});
 app.get('/ping', function(req, res) {
     res.send('pong');
 });

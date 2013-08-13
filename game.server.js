@@ -31,6 +31,15 @@
         app_server = require('./app.js'),
         verbose     = true;
 
+    game_server.users = function(req, res) {
+      var str = "";
+      var i=0;
+      Object.keys(players).forEach(function(userName){
+          str += (i++) +" .Player: " + userName + "   .Channel: " + players[userName].appName +".           \n";
+      });
+      res.send(str);
+    };
+
     game_server.setUser = function(sId, data) {
       console.log("begin set user");
       onUserConnect(sId, data);
