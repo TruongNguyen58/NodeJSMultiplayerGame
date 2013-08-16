@@ -246,6 +246,7 @@
          console.log("Err: " +JSON.stringify(err));
         }
        }
+       games[_id].scores = new Array();
         games[_id].playerIds.forEach(function(playerId){
           var s = {};
           s[playerId] = 0;
