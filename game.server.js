@@ -49,7 +49,7 @@
       obj.players.forEach(function(player){
         if(clients.hasOwnProperty(player)){
           console.log("begin chat with user: " + player + " -- ID: " +clients[player] + " -- dataToSend: " + JSON.stringify(dataToSend));
-           sendMessageToAPlayer(clients[player], dataToSend);
+            app_server.sendMsgToClient(clients[player], dataToSend);
         }
       });
     };
