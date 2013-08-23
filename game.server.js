@@ -15,6 +15,7 @@
   var TYPE_PLAYER_RECONNECTED = "playerReconnect";
   var TYPE_ONLINE_PLAYERS = "onlinePlayers";
    var TYPE_CONNECTED = "userJoined";
+   var TYPE_CHAT = "chat";
    var intervalTime = 15;
   var hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -38,6 +39,16 @@
           str += (i++) +" .Player: " + userName + "   .Channel: " + players[userName].appName +".           \n";
       });
       res.send(str);
+    };
+
+    game_server.chat = function(obj) {
+      console.log("begin chat with other user");
+      var dataToSend = {"notice" :TYPE_CHAT};
+      dataToSend.data = obj;
+      obj.players.forEach(function(player){
+        if(clients.hasOwnProperty(player))
+          sendMessageToAPlayer(clients[player], dataToSend);
+      }
     };
 
     game_server.setUser = function(sId, data) {

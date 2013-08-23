@@ -79,7 +79,10 @@ io.sockets.on('connection', function(socket) {
     var obj = JSON.parse(msg);
    // console.log("Receive request from cilent: " +msg);
    try{
-	  if(obj.type == "findGame") {
+    if(obj.type == "chat") {
+      game_server.chat(obj);
+    }
+	  else if(obj.type == "findGame") {
 		  game_server.findGame(obj);
 		}
     else if(obj.type == "findPlayer") {
