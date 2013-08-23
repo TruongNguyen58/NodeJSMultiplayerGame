@@ -43,11 +43,12 @@
 
     game_server.chat = function(obj) {
       console.log("begin chat with other user");
-      var dataToSend = {"notice" :TYPE_CHAT};
+      var dataToSend = {};
+      dataToSend.notice = TYPE_CHAT;
       dataToSend.data = obj;
       obj.players.forEach(function(player){
         if(clients.hasOwnProperty(player)){
-          console.log("begin chat with user: " + player + " -- ID: " +clients[player] + " -- msg: " + obj.msg);
+          console.log("begin chat with user: " + player + " -- ID: " +clients[player] + " -- dataToSend: " + JSON.stringify(dataToSend));
            sendMessageToAPlayer(clients[player], dataToSend);
         }
       });
