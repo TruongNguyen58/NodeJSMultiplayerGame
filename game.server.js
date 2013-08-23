@@ -47,6 +47,7 @@
       dataToSend.data = obj;
       obj.players.forEach(function(player){
         if(clients.hasOwnProperty(player)){
+          console.log("begin chat with user: " + player + " -- ID: " +clients[player] + " -- msg: " + obj.msg);
            sendMessageToAPlayer(clients[player], dataToSend);
         }
       });
