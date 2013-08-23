@@ -46,9 +46,10 @@
       var dataToSend = {"notice" :TYPE_CHAT};
       dataToSend.data = obj;
       obj.players.forEach(function(player){
-        if(clients.hasOwnProperty(player))
-          sendMessageToAPlayer(clients[player], dataToSend);
-      }
+        if(clients.hasOwnProperty(player)){
+           sendMessageToAPlayer(clients[player], dataToSend);
+        }
+      });
     };
 
     game_server.setUser = function(sId, data) {
