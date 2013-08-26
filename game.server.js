@@ -275,15 +275,28 @@
 
     game_server.onPlayerAnswer = function(obj) {
       var _id = obj.gameId;
-	    var round = obj.round;
+      if(games.hasOwnProperty(_id)){
+        if(games[_id].gameType == 4) {
+          onQuizAnswer(obj);
+        }
+        else if(games[_id].gameType == 2 || games[_id].gameType == 3 || games[_id].gameType == 5 ) {
+          onMatchingAnswer(obj);
+        }
+      }
+     
+    }; //game_server.onPlayerAnswer
+
+    function onQuizAnswer(obj) {
+      var _id = obj.gameId;
+      var round = obj.round;
       if(games.hasOwnProperty(_id) && (games[_id].currRound == round)){
         console.log("games.hasOwnProperty(_id) && (games.currRound === round)");
          //var dataToSend = {};
          numberOfPlayerAnswer[_id] = numberOfPlayerAnswer[_id]+1;
          console.log(_id + " --- " + obj.questionId +" ----- " + obj.result + " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
          console.log("Found game: " +JSON.stringify(games[_id]));
-    		 if(games[_id].passedRound[round] != true) // undefined or false
-    			games[_id].passedRound[round] = false;
+         if(games[_id].passedRound[round] != true) // undefined or false
+          games[_id].passedRound[round] = false;
              try{
               for(var i =0;i<games[_id].scores.length;i++) {
                 var playerScore = games[_id].scores[i];
@@ -304,9 +317,9 @@
               });
               if(games[_id].passedRound[round] == false && (obj.result == 'true' || numberOfPlayerAnswer[_id]>= games[_id].playerIds.length)) {
                 clearTimeout(recordIntervals[_id]);
-    			       games[_id].passedRound[round] = true;
+                 games[_id].passedRound[round] = true;
                 //gameRounds[_id] = gameRounds[_id] - 1;
-    			       games[_id].currRound = games[_id].currRound+1;
+                 games[_id].currRound = games[_id].currRound+1;
                 numberOfPlayerAnswer[_id]= 0;
                 //console.log("Game round remain: " + gameRounds[_id]);
                 if(games[_id].currRound < games[_id].roundNum){
@@ -318,24 +331,78 @@
                     }
                     recordIntervals[_id] = startIntervalTimer(_id, intervalTime);
                   }, 2*1000);
-          			} 
-          			else {
+                } 
+                else {
                   setTimeout(function() {
                     endgame(_id);
                   }, 2*1000);
-          				
-          			}
-    		     }
-    		}
-    		catch (err) {
-    			console.log("Error when process player answer: " + JSON.stringify(err));
-    		}
+                  
+                }
+             }
+        }
+        catch (err) {
+          conso
+          le.log("Error when process player answer: " + JSON.stringify(err));
+        }
       }
       else {
         console.log(" nonnnnnnnnnnnnnnnn games.hasOwnProperty(_id) && (games.currRound === round) ");
       }  
-    }; //game_server.onPlayerAnswer
+    }
 
+    function onMatchingAnswer(obj) {
+      var _id = obj.gameId;
+      var round = obj.round;
+      if(games.hasOwnProperty(_id) && (games[_id].currRound == round)){
+         console.log("Found game: " +JSON.stringify(games[_id]));
+         if(games[_id].passedRound[round] != true) // undefined or false
+             games[_id].passedRound[round] = false;
+             try{
+              for(var i =0;i<games[_id].scores.length;i++) {
+                var playerScore = games[_id].scores[i];
+                if(playerScore.hasOwnProperty(obj.playerAnswer)){
+                  playerScore[obj.playerAnswer] = playerScore[obj.playerAnswer] +1;
+                }
+              }
+              games[_id].playerIds.forEach(function(playerId){
+                if(playerId != obj.playerAnswer){
+                   var dataToSend = {};
+                   dataToSend.notice = obj.type;
+                   dataToSend.data = obj;
+                   sendMessageToAPlayer(playerId, dataToSend);
+                }
+              });
+              if(games[_id].passedRound[round] == false) {
+                //Next round
+                clearTimeout(recordIntervals[_id]);
+                games[_id].passedRound[round] = true;
+                games[_id].currRound = games[_id].currRound+1;
+                if(games[_id].currRound < games[_id].roundNum){
+                  console.log("Request next round");
+                  setTimeout(function() {
+                    sendRequestNextRoundToAll(games[_id]);
+                    if(recordIntervals.hasOwnProperty(_id)) {
+                     delete recordIntervals[_id];
+                    }
+                    recordIntervals[_id] = startIntervalTimer(_id, intervalTime);
+                  }, 2*1000);
+                } 
+                else {
+                  setTimeout(function() {
+                    endgame(_id);
+                  }, 2*1000);
+                  
+                }
+             }
+        }
+        catch (err) {
+          console.log("Error when process player answer: " + JSON.stringify(err));
+        }
+      }
+      else {
+        console.log(" nonnnnnnnnnnnnnnnn games.hasOwnProperty(_id) && (games.currRound === round) ");
+      }  
+    }
 
     game_server.onReceiveRqEndGame = function(obj) {
       var _id = obj.gameId;
