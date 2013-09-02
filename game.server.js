@@ -16,7 +16,7 @@
   var TYPE_ONLINE_PLAYERS = "onlinePlayers";
    var TYPE_CONNECTED = "userJoined";
    var TYPE_CHAT = "chat";
-   var intervalTime = 15;
+   // var intervalTime = 15;
   var hasOwnProperty = Object.prototype.hasOwnProperty;
 
     var recordIntervals = {};
@@ -204,7 +204,7 @@
         console.log('looking for a game for user: ' + obj.data.sender);
         obj.data.friends.forEach(function(playerId){
           if(players[playerId].status == 1) {
-            dataToSend.notice = TYPE_INVITE;
+             dataToSend.notice = TYPE_INVITE;
              dataToSend.data = obj.data;
              console.log('send invite to user: ' + JSON.stringify(playerId));
              app_server.sendMsgToClient(clients[playerId], dataToSend);
@@ -268,7 +268,7 @@
         });
         console.log("game saved with: "  + JSON.stringify(games[_id]));
   		 setTimeout(function() {
-  		   recordIntervals[_id] = startIntervalTimer(_id, intervalTime);
+  		   recordIntervals[_id] = startIntervalTimer(_id, games[_id].intervalTime);
   		 }, 3*1000);
   		//}
     }; //game_server.confirmJoinGame
@@ -329,7 +329,7 @@
                     if(recordIntervals.hasOwnProperty(_id)) {
                      delete recordIntervals[_id];
                     }
-                    recordIntervals[_id] = startIntervalTimer(_id, intervalTime);
+                    recordIntervals[_id] = startIntervalTimer(_id, games[_id].intervalTime);
                   }, 2*1000);
                 } 
                 else {
@@ -384,7 +384,7 @@
                     if(recordIntervals.hasOwnProperty(_id)) {
                      delete recordIntervals[_id];
                     }
-                    recordIntervals[_id] = startIntervalTimer(_id, intervalTime);
+                    recordIntervals[_id] = startIntervalTimer(_id, games[_id].intervalTime);
                   }, 2*1000);
                 } 
                 else {
