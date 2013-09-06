@@ -276,10 +276,10 @@
     game_server.onPlayerAnswer = function(obj) {
       var _id = obj.gameId;
       if(games.hasOwnProperty(_id)){
-        if(games[_id].gameType == 4) {
+        if(games[_id].gameType == 4 || games[_id].gameType == 5) {
           onQuizAnswer(obj);
         }
-        else if(games[_id].gameType == 2 || games[_id].gameType == 3 || games[_id].gameType == 5 ) {
+        else if(games[_id].gameType == 2 || games[_id].gameType == 3  ) {
           onMatchingAnswer(obj);
         }
       }
