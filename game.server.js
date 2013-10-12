@@ -139,7 +139,7 @@ game_server.onUserQuitGame = function(sId) {
 				var gameId = currentGameOfPlayer[socketsOfClients[sId]];
 				var data = {};
 				var playerId = socketsOfClients[sId];
-				data.player =  {"playerId" : playerId, "playerName" :players[playerId].playerName};
+				data.player =  players[playerId].playerName;
 				endWhenPlayerQuitGame(gameId, "playerQuitGame", data)
 			}
 		}
