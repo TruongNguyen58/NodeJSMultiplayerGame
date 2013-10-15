@@ -94,7 +94,7 @@ function onUserConnect(sId, playerData) {
 				console.log("Key: " + oldSocketId + " Value: "
 						+ socketsOfClients[oldSocketId] + " PlayerName: "
 						+ playerId);
-				if (socketsOfClients[oldSocketId] == playerId) {
+				if (socketsOfClients[oldSocketId] == 	playerId) {
 					delete socketsOfClients[oldSocketId];
 				}
 			});
@@ -345,8 +345,9 @@ function onQuizAnswer(obj) {
 							sendMessageToAPlayer(playerId, dataToSend);
 						}
 					});
+			console.log("Player length: " + Object.size(games[gameId].clientPlayers));
 			if (games[gameId].passedRound[round] == false
-					&& (obj.result == 'true' || numberOfPlayerAnswer[gameId] >= games[gameId].clientPlayers.length)) {
+					&& (obj.result == 'true' || numberOfPlayerAnswer[gameId] >= Object.size(games[gameId].clientPlayers))) {
 				clearTimeout(recordIntervals[gameId]);
 				games[gameId].passedRound[round] = true;
 				//gameRounds[gameId] = gameRounds[gameId] - 1;
@@ -589,3 +590,11 @@ function sendMessageToAPlayer(playerId, msg) {
 	}
 
 }
+
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
