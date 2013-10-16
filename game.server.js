@@ -61,8 +61,8 @@ game_server.setUser = function(sId, data) {
 	app_server.sendToClient(sId, TYPE_CONNECTED, {});
 };
 
-game_server.changeStatus = function(sId, data) {
-	console.log("begin change Status");
+game_server.changeStatus = function(data) {
+	console.log("begin change Status: " + JSON.stringify(data));
 	if(players.hasOwnProperty(data.player)){
 		players[data.player].status = data.status;
 	}

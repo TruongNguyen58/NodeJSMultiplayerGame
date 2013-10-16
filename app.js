@@ -76,7 +76,9 @@ io.sockets.on('connection', function(socket) {
 				game_server.chat(obj);
 			} else if (obj.type == "findGame") {
 				game_server.findGame(obj);
-			} else if (obj.type == "findPlayer") {
+			} else if (obj.type == "changeStatus") {
+				game_server.changeStatus(obj);
+			}else if (obj.type == "findPlayer") {
 				game_server.findPlayer(obj);
 			} else if (obj.type == "confirmJoinGame") {
 				game_server.confirmJoinGame(obj);
