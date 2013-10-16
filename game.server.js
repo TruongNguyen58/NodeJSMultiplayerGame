@@ -72,7 +72,7 @@ function onUserConnect(sId, playerData) {
 	var playerName = playerData.userName;
 	var playerId = playerData.playerId;
 	var i = 0;
-	console.log("User: " + playerName + " connected with socketID: " + sId);
+	console.log("User: " + JSON.stringify(playerData) + " connected with socketID: " + sId);
 	// Does not exist ... so, proceed
 	clients[playerId] = sId;
 	if (players.hasOwnProperty(playerId)) {
