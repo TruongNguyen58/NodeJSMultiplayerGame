@@ -61,6 +61,13 @@ game_server.setUser = function(sId, data) {
 	app_server.sendToClient(sId, TYPE_CONNECTED, {});
 };
 
+game_server.changeStatus = function(sId, data) {
+	console.log("begin change Status");
+	if(players.hasOwnProperty(data.player)){
+		players[data.player].status = data.status;
+	}
+};
+
 function onUserConnect(sId, playerData) {
 	var playerName = playerData.userName;
 	var playerId = playerData.playerId;
@@ -84,7 +91,7 @@ function onUserConnect(sId, playerData) {
 	players[playerId] = {
 		"playerId": playerId,
 		"playerName" : playerName,	
-		"status" : 1,
+		"status" : playerData.status,
 		"socketId" : sId,
 		"appName" : playerData.appName
 	};
@@ -103,6 +110,8 @@ function onUserConnect(sId, playerData) {
 	console.log("clients: " + JSON.stringify(clients));
 	console.log("socketsOfClients: " + JSON.stringify(socketsOfClients));
 }
+
+
 
 game_server.onUserDisconnect = function(sId) {
 
