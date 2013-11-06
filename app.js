@@ -86,6 +86,8 @@ io.sockets.on('connection', function(socket) {
 				game_server.startGame(socket.id, obj);
 			} else if (obj.type == "startGroupTest") {
 				game_server.startGroupTest(socket.id, obj);
+			} else if (obj.type == "finishGroupTest") {
+				game_server.onPlayerFinishGroupTest(obj);
 			} else if (obj.type == "playerAnswer") {
 				game_server.onPlayerAnswer(obj);
 			} else if (obj.type == "onlinePlayers") {

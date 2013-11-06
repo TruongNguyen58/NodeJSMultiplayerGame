@@ -295,11 +295,21 @@ game_server.startGroupTest = function(gameId, obj) {
 	}
 	console.log("game saved with: " + JSON.stringify(games[gameId]));
 	var timeToEndGame = games[gameId].roundNum * games[gameId].intervalTime;
+	games[gameId].finish  = 0;
 	setTimeout(
 			function() {
 				recordIntervals[gameId] = startGroupTestTimer(gameId, timeToEndGame/2);
 			}, 3 * 1000);
 	//}
+}; //game_server.startGroupTest
+
+game_server.onPlayerFinishGroupTest = function(obj) {
+	var gameId = obj.gameId;
+	var finish = games[gameId].finish + 1;
+	games[gameId].finish = finish;
+	if(finish == Object.size(games[gameId].clientPlayers)){
+		endGroupTest(gameId);
+	}
 }; //game_server.startGroupTest
 
 //TODO
@@ -319,7 +329,6 @@ function startGroupTestTimer(gameId, timeToEndGame) {
 }
 
 function endGroupTest(gameId) {
-	
 	if (games.hasOwnProperty(gameId)) {
 		console.log("end Group Test! zzzzzzzzzzzzzzzzz: "
 				+ JSON.stringify(games[gameId]));
