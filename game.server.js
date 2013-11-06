@@ -129,7 +129,8 @@ game_server.onUserDisconnect = function(sId) {
 				var data = {};
 				var playerId = socketsOfClients[sId];
 				data.player =  {"playerId" : playerId, "playerName" :players[playerId].playerName};
-				endWhenPlayerQuitGame(gameId, "playerQuitGame", data)
+				if(games[gameId].gameRule == 1)
+					endWhenPlayerQuitGame(gameId, "playerQuitGame", data)
 			}
 			delete players[socketsOfClients[sId]];
 			delete clients[socketsOfClients[sId]];
@@ -149,7 +150,8 @@ game_server.onUserQuitGame = function(sId) {
 				var data = {};
 				var playerId = socketsOfClients[sId];
 				data.player =  players[playerId].playerName;
-				endWhenPlayerQuitGame(gameId, "playerQuitGame", data)
+				if(games[gameId].gameRule == 1)
+					endWhenPlayerQuitGame(gameId, "playerQuitGame", data)
 			}
 		}
 	} catch (err) {
@@ -263,11 +265,94 @@ game_server.confirmJoinGame = function(obj) {
 	app_server.sendMsgToClient(clients[obj.sender], dataToSend);
 }; //game_server.confirmJoinGame
 
-game_server.startGame = function(gameId, obj) {
-	console.log("start game xxxxxxxxxxxxxx");
+game_server.startGroupTest = function(gameId, obj) {
 	console.log("JSON.stringify(obj.game) :        " + JSON.stringify(obj.game));
 	var gameToSave = obj.game;
-	console.log("start game 2222222222222");
+	var dataToSend = {};
+	console.log("Game before save: " + JSON.stringify(gameToSave));
+	games[gameId] = gameToSave;
+	gameToSave.gameId = gameId;
+	obj.game = gameToSave;
+	dataToSend.notice = "startGroupTest";
+	dataToSend.data = obj;
+	try {
+		Object.keys(gameToSave.clientPlayers).forEach(
+				function(playerId) {
+					players[playerId].status = 2;
+					currentGameOfPlayer[playerId] = gameId;
+					app_server.sendMsgToClient(clients[playerId], dataToSend);
+				});
+	} catch (err) {
+		console.log("Err: " + JSON.stringify(err));
+	}
+	if (recordIntervals.hasOwnProperty(gameId)) {
+		try {
+			clearTimeout(recordIntervals[gameId]);
+			delete recordIntervals[gameId];
+		} catch (err) {
+			console.log("Err: " + JSON.stringify(err));
+		}
+	}
+	console.log("game saved with: " + JSON.stringify(games[gameId]));
+	var timeToEndGame = games[gameId].roundNum * games[gameId].intervalTime;
+	setTimeout(
+			function() {
+				recordIntervals[gameId] = startGroupTestTimer(gameId, timeToEndGame/2);
+			}, 3 * 1000);
+	//}
+}; //game_server.startGroupTest
+
+//TODO
+function startGroupTestTimer(gameId, timeToEndGame) {
+	console.log("End group test in " + timeToEndGame + " s");
+		var start_time = new Date();
+		var interval = setTimeout(function() {
+			try {
+				clearTimeout(interval);
+				console.log("End group test");
+				endGroupTest(gameId);
+			} catch (err) {
+				
+			}
+		}, timeToEndGame * 1000);
+		return interval;
+}
+
+function endGroupTest(gameId) {
+	
+	if (games.hasOwnProperty(gameId)) {
+		console.log("end Group Test! zzzzzzzzzzzzzzzzz: "
+				+ JSON.stringify(games[gameId]));
+		var dataToSend = {};
+		dataToSend.notice = "endGroupTest";
+		dataToSend.data = {};
+		
+		sendMessageToAll(games[gameId], dataToSend);
+		setTimeout(function() {
+			try {
+				delete recordIntervals[gameId];
+				delete numberOfPlayerAnswer[gameId];
+				console.log(JSON.stringify(games));
+				Object.keys(games[gameId].clientPlayers).forEach(
+						function(playerId) {
+							if (currentGameOfPlayer.hasOwnProperty(playerId)) {
+								delete currentGameOfPlayer[playerId];
+							}
+							if (players[playerId].status == 2)
+								players[playerId].status = 1;
+						});
+				delete games[gameId];
+			} catch (err) {
+				console.log("Error when delete data to endGame: "
+						+ JSON.stringify(err));
+			}
+		}, 3 * 1000);
+	}
+}
+
+game_server.startGame = function(gameId, obj) {
+	console.log("JSON.stringify(obj.game) :        " + JSON.stringify(obj.game));
+	var gameToSave = obj.game;
 	var dataToSend = {};
 	console.log("Game before save: " + JSON.stringify(gameToSave));
 	games[gameId] = gameToSave;
@@ -309,7 +394,7 @@ game_server.startGame = function(gameId, obj) {
 						games[gameId].intervalTime);
 			}, 3 * 1000);
 	//}
-}; //game_server.confirmJoinGame
+}; //game_server.startGame
 
 game_server.onPlayerAnswer = function(obj) {
 	var gameId = obj.gameId;
