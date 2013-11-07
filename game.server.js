@@ -303,6 +303,14 @@ game_server.startGroupTest = function(gameId, obj) {
 	//}
 }; //game_server.startGroupTest
 
+game_server.exitWaitingGame = function(obj) {
+	console.log("On user exit waiting game: " + JSON.stringify(obj));
+	var dataToSend = {};
+	dataToSend.notice = "endGroupTest";
+	dataToSend.data = {"player":obj.player};
+	app_server.sendMsgToClient(clients[obj.sender], dataToSend);
+}; //game_server.startGroupTest
+
 game_server.onPlayerFinishGroupTest = function(obj) {
 	var gameId = obj.gameId;
 	var finish = games[gameId].finish + 1;
@@ -691,7 +699,6 @@ function sendMessageToAPlayer(playerId, msg) {
 	} catch (err) {
 		console.log("Error when sendMessageToAPlayer " + JSON.stringify(err));
 	}
-
 }
 
 Object.size = function(obj) {
