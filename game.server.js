@@ -152,12 +152,24 @@ game_server.onUserQuitGame = function(sId) {
 				data.player =  players[playerId].playerName;
 				if(games[gameId].gameRule == 1)
 					endWhenPlayerQuitGame(gameId, "playerQuitGame", data)
+				else {
+					if (players[playerId].status == 2)
+						players[playerId].status = 1;
+					delete games[gameId].clientPlayers[playerId];
+					if(Object.size(games[gameId].clientPlayers) <= 1) {
+						endGroupTest(gameId);
+					}
+				}
 			}
 		}
 	} catch (err) {
 		console.log("ERORR onUserQuitGame: " + JSON.stringify(err));
 	}
 };
+
+function removeFromObjectByKey(key) {
+	  delete thisIsObject[key];
+	}
 
 game_server.getAvailablePlayers = function(sId, obj) {
 	try {
