@@ -306,7 +306,7 @@ game_server.startGroupTest = function(gameId, obj) {
 game_server.exitWaitingGame = function(obj) {
 	console.log("On user exit waiting game: " + JSON.stringify(obj));
 	var dataToSend = {};
-	dataToSend.notice = "endGroupTest";
+	dataToSend.notice = "exitWaitingGame";
 	dataToSend.data = {"player":obj.player};
 	app_server.sendMsgToClient(clients[obj.sender], dataToSend);
 }; //game_server.startGroupTest
