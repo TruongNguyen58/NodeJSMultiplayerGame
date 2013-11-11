@@ -160,7 +160,7 @@ game_server.onUserQuitGame = function(sId) {
 				var data = {};
 				var playerId = socketsOfClients[sId];
 				data.player =  players[playerId].playerName;
-				
+				players[playerId].status = 1;
 				if(games[gameId].gameRule == 1){
 					for ( var i = 0; i < games[gameId].scores.length; i++) {
 						var playerScore = games[gameId].scores[i];
