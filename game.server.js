@@ -134,7 +134,7 @@ game_server.onUserDisconnect = function(sId) {
 					for ( var i = 0; i < games[gameId].scores.length; i++) {
 						var playerScore = games[gameId].scores[i];
 						if (playerScore.hasOwnProperty(playerId)) {
-							playerScore[obj.playerAnswer] = -1000;
+							playerScore[playerId] = -1000;
 							break;
 						}
 					}
@@ -165,7 +165,7 @@ game_server.onUserQuitGame = function(sId) {
 					for ( var i = 0; i < games[gameId].scores.length; i++) {
 						var playerScore = games[gameId].scores[i];
 						if (playerScore.hasOwnProperty(playerId)) {
-							playerScore[obj.playerAnswer] = -1000;
+							playerScore[playerId] = -1000;
 							break;
 						}
 					}
