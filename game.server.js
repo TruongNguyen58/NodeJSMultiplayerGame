@@ -150,6 +150,7 @@ game_server.onUserDisconnect = function(sId) {
 				}
 					
 			}
+			console.log("groupTestTmp: " +JSON.stringify(groupTestTmp));
 			if(groupTestTmp.hasOwnProperty(sId)){
 				var obj = {};
 				obj.sender = groupTestTmp[sId];
