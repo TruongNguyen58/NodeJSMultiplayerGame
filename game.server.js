@@ -155,6 +155,7 @@ game_server.onUserDisconnect = function(sId) {
 				var obj = {};
 				obj.sender = groupTestTmp[sId];
 				obj.player = socketsOfClients[sId];
+				console.log("object: " + JSON.stringify(obj));
 				exitWaitingGame(obj);
 			}
 			delete players[socketsOfClients[sId]];
