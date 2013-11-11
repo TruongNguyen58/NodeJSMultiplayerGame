@@ -26,6 +26,7 @@ var socketsOfClients = {};
 var games = {};
 var players = {};
 var currentGameOfPlayer = {};
+var groupTestTmp = {};
 
 var game_server = module.exports, app_server = require('./app.js'), verbose = true;
 
@@ -148,6 +149,12 @@ game_server.onUserDisconnect = function(sId) {
 					}
 				}
 					
+			}
+			if(groupTestTmp.hasOwnProperty(sId)){
+				var obj = {};
+				obj.sender = groupTestTmp[sId];
+				obj.player = socketsOfClients[sId];
+				exitWaitingGame(obj);
 			}
 			delete players[socketsOfClients[sId]];
 			delete clients[socketsOfClients[sId]];
@@ -294,10 +301,11 @@ game_server.inviteToGame = function(sId, obj) {
 
 }; //game_server.inviteToGame
 
-game_server.confirmJoinGame = function(obj) {
+game_server.confirmJoinGame = function(sId, obj) {
 	console.log("Available user: " + JSON.stringify(clients));
 	var dataToSend = {};
 	console.log('send confirm to sender: ' + obj.sender);
+	groupTestTmp[sId] = obj.sender;
 	dataToSend.notice = "receiveConfirm"
 	dataToSend.data = obj;
 	app_server.sendMsgToClient(clients[obj.sender], dataToSend);
@@ -319,6 +327,7 @@ game_server.startGroupTest = function(gameId, obj) {
 					players[playerId].status = 2;
 					currentGameOfPlayer[playerId] = gameId;
 					app_server.sendMsgToClient(clients[playerId], dataToSend);
+					delete groupTestTmp[clients[playerId]];
 				});
 	} catch (err) {
 		console.log("Err: " + JSON.stringify(err));
@@ -347,6 +356,7 @@ game_server.exitWaitingGame = function(obj) {
 	dataToSend.notice = "exitWaitingGame";
 	dataToSend.data = {"player":obj.player};
 	app_server.sendMsgToClient(clients[obj.sender], dataToSend);
+	delete groupTestTmp[clients[obj.player]];
 }; //game_server.startGroupTest
 
 game_server.onPlayerFinishGroupTest = function(obj) {

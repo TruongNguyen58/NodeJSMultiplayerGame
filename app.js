@@ -81,7 +81,7 @@ io.sockets.on('connection', function(socket) {
 			}else if (obj.type == "findPlayer") {
 				game_server.findPlayer(obj);
 			} else if (obj.type == "confirmJoinGame") {
-				game_server.confirmJoinGame(obj);
+				game_server.confirmJoinGame(socket.id, obj);
 			} else if (obj.type == "startGame") {
 				game_server.startGame(socket.id, obj);
 			}else if (obj.type == "exitWaitingGame") {
