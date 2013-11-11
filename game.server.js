@@ -156,7 +156,7 @@ game_server.onUserDisconnect = function(sId) {
 				obj.sender = groupTestTmp[sId];
 				obj.player = socketsOfClients[sId];
 				console.log("object: " + JSON.stringify(obj));
-				exitWaitingGame(obj);
+				onExitWaitingGame(obj);
 			}
 			delete players[socketsOfClients[sId]];
 			delete clients[socketsOfClients[sId]];
@@ -353,13 +353,17 @@ game_server.startGroupTest = function(gameId, obj) {
 }; //game_server.startGroupTest
 
 game_server.exitWaitingGame = function(obj) {
+	onExitWaitingGame(obj);
+}; //game_server.startGroupTest
+
+function onExitWaitingGame (obj) {
 	console.log("On user exit waiting game: " + JSON.stringify(obj));
 	var dataToSend = {};
 	dataToSend.notice = "exitWaitingGame";
 	dataToSend.data = {"player":obj.player};
 	app_server.sendMsgToClient(clients[obj.sender], dataToSend);
 	delete groupTestTmp[clients[obj.player]];
-}; //game_server.startGroupTest
+}
 
 game_server.onPlayerFinishGroupTest = function(obj) {
 	var gameId = obj.gameId;
