@@ -129,7 +129,6 @@ game_server.onUserDisconnect = function(sId) {
 				var data = {};
 				var playerId = socketsOfClients[sId];
 				data.player =  {"playerId" : playerId, "playerName" :players[playerId].playerName};
-
 				if(games[gameId].gameRule == 1){
 					for ( var i = 0; i < games[gameId].scores.length; i++) {
 						var playerScore = games[gameId].scores[i];
@@ -139,6 +138,14 @@ game_server.onUserDisconnect = function(sId) {
 						}
 					}
 					endWhenPlayerQuitGame(gameId, "playerQuitGame", data)
+				}
+				else {
+					if (players[playerId].status == 2)
+						players[playerId].status = 1;
+					delete games[gameId].clientPlayers[playerId];
+					if(Object.size(games[gameId].clientPlayers) <= 1) {
+						endGroupTest(gameId);
+					}
 				}
 					
 			}
