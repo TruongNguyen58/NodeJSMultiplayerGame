@@ -653,6 +653,7 @@ function endWhenPlayerQuitGame(gameId, notice, data) {
 			console.log(JSON.stringify(games));
 			Object.keys(games[gameId].clientPlayers).forEach(
 					function(playerId) {
+						console.log("set status for user: " + playerId);
 						players[playerId].status = 1;
 						if (currentGameOfPlayer.hasOwnProperty(playerId)) {
 							delete currentGameOfPlayer[playerId];
