@@ -147,7 +147,7 @@ game_server.onUserDisconnect = function(sId) {
 						console.log("Size remain: " + Object.size(games[gameId].clientPlayers));
 					}
 						
-					if(Object.size(games[gameId].clientPlayers) <= 1) {
+					if(Object.size(games[gameId].clientPlayers) <= 1 || games[gameId].finish <= Object.size(games[gameId].clientPlayers)) {
 						endGroupTest(gameId);
 					}
 				}
