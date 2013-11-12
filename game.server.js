@@ -373,7 +373,8 @@ game_server.onPlayerFinishGroupTest = function(obj) {
 	var finish = games[gameId].finish + 1;
 	games[gameId].finish = finish;
 	games[gameId].finishPlayers[obj.player] = true;
-	if(finish == Object.size(games[gameId].clientPlayers)){
+	console.log("Players remain: " + Object.size(games[gameId].clientPlayers);
+	if(finish >= Object.size(games[gameId].clientPlayers)){
 		endGroupTest(gameId);
 	}
 }; //game_server.startGroupTest
