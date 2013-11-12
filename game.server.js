@@ -141,9 +141,11 @@ game_server.onUserDisconnect = function(sId) {
 					endWhenPlayerQuitGame(gameId, "playerQuitGame", data)
 				}
 				else {
-					if (players[playerId].status == 2)
-						players[playerId].status = 1;
-					delete games[gameId].clientPlayers[playerId];
+					if(games[gameId].finishPlayers[playerId] != true){
+						console.log("delete games[gameId].clientPlayers[playerId]: " + playerId);
+						delete games[gameId].clientPlayers[playerId];
+					}
+						
 					if(Object.size(games[gameId].clientPlayers) <= 1) {
 						endGroupTest(gameId);
 					}
@@ -345,6 +347,7 @@ game_server.startGroupTest = function(gameId, obj) {
 	console.log("game saved with: " + JSON.stringify(games[gameId]));
 	var timeToEndGame = games[gameId].roundNum * games[gameId].intervalTime;
 	games[gameId].finish  = 0;
+	games[gameId].finishPlayers = {};
 	setTimeout(
 			function() {
 				recordIntervals[gameId] = startGroupTestTimer(gameId, timeToEndGame/2);
@@ -369,6 +372,7 @@ game_server.onPlayerFinishGroupTest = function(obj) {
 	var gameId = obj.gameId;
 	var finish = games[gameId].finish + 1;
 	games[gameId].finish = finish;
+	games[gameId].finishPlayers[obj.player] = true;
 	if(finish == Object.size(games[gameId].clientPlayers)){
 		endGroupTest(gameId);
 	}
