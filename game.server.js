@@ -144,6 +144,7 @@ game_server.onUserDisconnect = function(sId) {
 					if(games[gameId].finishPlayers[playerId] != true){
 						console.log("delete games[gameId].clientPlayers[playerId]: " + playerId);
 						delete games[gameId].clientPlayers[playerId];
+						console.log("Size remain: " + Object.size(games[gameId].clientPlayers));
 					}
 						
 					if(Object.size(games[gameId].clientPlayers) <= 1) {
@@ -373,7 +374,7 @@ game_server.onPlayerFinishGroupTest = function(obj) {
 	var finish = games[gameId].finish + 1;
 	games[gameId].finish = finish;
 	games[gameId].finishPlayers[obj.player] = true;
-	console.log("Players remain: " + Object.size(games[gameId].clientPlayers));
+	console.log("Players remain: " + Object.size(games[gameId].clientPlayers) - finish);
 	if(finish >= Object.size(games[gameId].clientPlayers)){
 		endGroupTest(gameId);
 	}
