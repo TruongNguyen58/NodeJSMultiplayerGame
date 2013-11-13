@@ -131,7 +131,7 @@ function onUserConnect(sId, playerData) {
 	//console.log("socketsOfClients: " + JSON.stringify(socketsOfClients));
 	if(queueDataToSend.hasOwnProperty(playerId)) {
 		console.log("Found data not sent from last session: " + JSON.stringify(queueDataToSend[playerId]));
-		sendMessageToPlayer(playerId, queueDataToSend[playerId]);
+		sendMessageToPlayer(sId, queueDataToSend[playerId]);
 		delete queueDataToSend[playerId];
 	}
 }
@@ -797,7 +797,15 @@ function sendMessageToAll(game, msg) {
 		try {
 			Object.keys(game.clientPlayers).forEach(
 					function(playerId) {
-						sendMessageToPlayer(clients[playerId], msg);
+						try{
+							app_server.sendMsgToClient(clients[playerId], msg);
+						}
+						catch(err) {
+							console.log("Error when send msg to client: " + sId);
+							if(msg.notice == "endGroupTest")
+								queueDataToSend[playerId] = msg;
+						}
+						
 					});
 		} catch (err) {
 			//console.log("Error when send msg to all");
@@ -809,9 +817,7 @@ function sendMessageToPlayer(sId, msg) {
 	try {
 		app_server.sendMsgToClient(sId, msg);
 	} catch (err) {
-		console.log("Error when send msg to client: " + sId);
-		if(msg.notice == "endGroupTest")
-			queueDataToSend[socketsOfClients[sId]] = msg;
+		//console.log("Error when send msg to client: " + sId);
 	}
 }
 
