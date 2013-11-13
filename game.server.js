@@ -81,9 +81,25 @@ function onUserConnect(sId, playerData) {
 		try {
 			if (currentGameOfPlayer.hasOwnProperty(playerId)) {
 				var gameId = currentGameOfPlayer[playerId];
-				var data = {};
-				data.player = {"playerId" : playerId, "playerName" :playerName};
-				endWhenPlayerQuitGame(gameId, "playerQuitGame", data);
+				if(games[gameId].gameRule == 1){
+					var data = {};
+					data.player = {"playerId" : playerId, "playerName" :playerName};
+					endWhenPlayerQuitGame(gameId, "playerQuitGame", data);
+				}
+				else if(games[gameId].gameRule == 2){
+					if(games[gameId].finishPlayers[playerId] != true){
+						console.log("delete games[gameId].clientPlayers[playerId]: " + playerId);
+						delete games[gameId].clientPlayers[playerId];
+						console.log("Size remain: " + Object.size(games[gameId].clientPlayers));
+					}
+						
+					if(Object.size(games[gameId].clientPlayers) <= 1 || games[gameId].finish <= Object.size(games[gameId].clientPlayers)) {
+						endGroupTest(gameId);
+					}
+					if (currentGameOfPlayer.hasOwnProperty(playerId)) {
+							delete currentGameOfPlayer[playerId];
+					}
+				}
 			}
 		} catch (err) {
 		}
@@ -149,6 +165,9 @@ game_server.onUserDisconnect = function(sId) {
 						
 					if(Object.size(games[gameId].clientPlayers) <= 1 || games[gameId].finish <= Object.size(games[gameId].clientPlayers)) {
 						endGroupTest(gameId);
+					}
+					if (currentGameOfPlayer.hasOwnProperty(playerId)) {
+							delete currentGameOfPlayer[playerId];
 					}
 				}
 					
