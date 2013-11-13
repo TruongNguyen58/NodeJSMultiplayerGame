@@ -88,6 +88,7 @@ function onUserConnect(sId, playerData) {
 					endWhenPlayerQuitGame(gameId, "playerQuitGame", data);
 				}
 				else if(games[gameId].gameRule == 2){
+					console.log("games[gameId].finishPlayers[playerId]: " + games[gameId].finishPlayers[playerId]);
 					if(games[gameId].finishPlayers[playerId] != true){
 						console.log("delete games[gameId].clientPlayers[playerId]: " + playerId);
 						delete games[gameId].clientPlayers[playerId];
@@ -161,6 +162,7 @@ game_server.onUserDisconnect = function(sId) {
 					endWhenPlayerQuitGame(gameId, "playerQuitGame", data)
 				}
 				else {
+					console.log("games[gameId].finishPlayers[playerId]: " + games[gameId].finishPlayers[playerId]);
 					if(games[gameId].finishPlayers[playerId] != true){
 						console.log("delete games[gameId].clientPlayers[playerId]: " + playerId);
 						delete games[gameId].clientPlayers[playerId];
