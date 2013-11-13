@@ -114,12 +114,13 @@ io.sockets.on('connection', function(socket) {
 });
 
 app_server.sendMsgToClient = function(sId, msg) {
-	try {
-		// console.log("sendMsgToClient: " + sId + " with msg: " + JSON.stringify(msg));
-		io.sockets.sockets[sId].emit('message', msg);
-	} catch (err) {
-		console.log("Error: " + JSON.stringify(err));
-	}
+	io.sockets.sockets[sId].emit('message', msg);
+	// try {
+	// 	// console.log("sendMsgToClient: " + sId + " with msg: " + JSON.stringify(msg));
+	// 	io.sockets.sockets[sId].emit('message', msg);
+	// } catch (err) {
+	// 	console.log("Error: " + JSON.stringify(err));
+	// }
 
 };
 
