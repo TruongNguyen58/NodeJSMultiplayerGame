@@ -43,26 +43,26 @@ game_server.users = function(req, res) {
 };
 
 game_server.chat = function(obj) {
-	//console.log("begin chat with other user");
+	console.log("begin chat with other user");
 	var dataToSend = {};
 	dataToSend.notice = TYPE_CHAT;
 	dataToSend.data = obj;
 	obj.players.forEach(function(player) {
 		if (clients.hasOwnProperty(player)) {
-			//console.log("begin chat with user: " + player + " -- ID: "+ clients[player] + " -- dataToSend: "+ JSON.stringify(dataToSend));
+			console.log("begin chat with user: " + player + " -- ID: "+ clients[player] + " -- dataToSend: "+ JSON.stringify(dataToSend));
 			sendMessageToPlayer(clients[player], dataToSend)
 		}
 	});
 };
 
 game_server.setUser = function(sId, data) {
-	//console.log("begin set user");
+	console.log("begin set user");
 	onUserConnect(sId, data);
 	app_server.sendToClient(sId, TYPE_CONNECTED, {});
 };
 
 game_server.changeStatus = function(data) {
-	//console.log("begin change Status: " + JSON.stringify(data));
+	console.log("begin change Status: " + JSON.stringify(data));
 	if(players.hasOwnProperty(data.player)){
 		players[data.player].status = data.status;
 	}
@@ -72,11 +72,11 @@ function onUserConnect(sId, playerData) {
 	var playerName = playerData.userName;
 	var playerId = playerData.playerId;
 	var i = 0;
-	//console.log("User: " + JSON.stringify(playerData) + " connected with socketID: " + sId);
+	console.log("User: " + JSON.stringify(playerData) + " connected with socketID: " + sId);
 	// Does not exist ... so, proceed
 	clients[playerId] = sId;
 	if (players.hasOwnProperty(playerId)) {
-		//console.log("players.hasOwnProperty(" + playerId + ")");
+		console.log("players.hasOwnProperty(" + playerId + ")");
 		try {
 			if (currentGameOfPlayer.hasOwnProperty(playerId)) {
 				var gameId = currentGameOfPlayer[playerId];
@@ -86,13 +86,13 @@ function onUserConnect(sId, playerData) {
 					endWhenPlayerQuitGame(gameId, "playerQuitGame", data);
 				}
 				else if(games[gameId].gameRule == 2){
-					//console.log("games[gameId].finishPlayers[playerId]: " + games[gameId].finishPlayers[playerId]);
-					//console.log("Object.size(games[gameId].clientPlayers): " + Object.size(games[gameId].clientPlayers));
-					//console.log("games[gameId].finish: " + games[gameId].finish);
+					console.log("games[gameId].finishPlayers[playerId]: " + games[gameId].finishPlayers[playerId]);
+					console.log("Object.size(games[gameId].clientPlayers): " + Object.size(games[gameId].clientPlayers));
+					console.log("games[gameId].finish: " + games[gameId].finish);
 					if(games[gameId].finishPlayers[playerId] != true){
-						//console.log("delete games[gameId].clientPlayers[playerId]: " + playerId);
+						console.log("delete games[gameId].clientPlayers[playerId]: " + playerId);
 						delete games[gameId].clientPlayers[playerId];
-						//console.log("Size remain: " + Object.size(games[gameId].clientPlayers));
+						console.log("Size remain: " + Object.size(games[gameId].clientPlayers));
 					}
 						
 					if(Object.size(games[gameId].clientPlayers) <= 1 || games[gameId].finish >= Object.size(games[gameId].clientPlayers)) {
@@ -117,18 +117,18 @@ function onUserConnect(sId, playerData) {
 		"socketId" : sId,
 		"appName" : playerData.appName
 	};
-	//console.log("Current player: " + JSON.stringify(players[playerId]));
+	console.log("Current player: " + JSON.stringify(players[playerId]));
 	Object.keys(socketsOfClients).forEach(
 			function(oldSocketId) {
-				//console.log("Key: " + oldSocketId + " Value: "+ socketsOfClients[oldSocketId] + " PlayerName: "+ playerId);
+				console.log("Key: " + oldSocketId + " Value: "+ socketsOfClients[oldSocketId] + " PlayerName: "+ playerId);
 				if (socketsOfClients[oldSocketId] == 	playerId) {
 					delete socketsOfClients[oldSocketId];
 				}
 			});
 
 	socketsOfClients[sId] = playerId;
-	//console.log("clients: " + JSON.stringify(clients));
-	//console.log("socketsOfClients: " + JSON.stringify(socketsOfClients));
+	console.log("clients: " + JSON.stringify(clients));
+	console.log("socketsOfClients: " + JSON.stringify(socketsOfClients));
 	if(queueDataToSend.hasOwnProperty(playerId)) {
 		console.log("Found data not sent from last session: " + JSON.stringify(queueDataToSend[playerId]));
 		sendMessageToPlayer(sId, queueDataToSend[playerId]);
@@ -144,8 +144,8 @@ game_server.onUserDisconnect = function(sId) {
 		var i = 0;
 		//ad.hasOwnProperty(prop)
 		if (socketsOfClients.hasOwnProperty(sId)) {
-			//console.log("Player: " + socketsOfClients[sId]+ " Disconnect game");
-			//console.log("currentGameOfPlayer: "+ JSON.stringify(currentGameOfPlayer));
+			console.log("Player: " + socketsOfClients[sId]+ " Disconnect game");
+			console.log("currentGameOfPlayer: "+ JSON.stringify(currentGameOfPlayer));
 			var playerId = socketsOfClients[sId];
 			if (currentGameOfPlayer.hasOwnProperty(socketsOfClients[sId])) {
 				var gameId = currentGameOfPlayer[socketsOfClients[sId]];
@@ -162,13 +162,13 @@ game_server.onUserDisconnect = function(sId) {
 					endWhenPlayerQuitGame(gameId, "playerQuitGame", data)
 				}
 				else {
-					//console.log("games[gameId].finishPlayers[playerId]: " + games[gameId].finishPlayers[playerId]);
-					//console.log("Object.size(games[gameId].clientPlayers): " + Object.size(games[gameId].clientPlayers));
-					//console.log("games[gameId].finish: " + games[gameId].finish);
+					console.log("games[gameId].finishPlayers[playerId]: " + games[gameId].finishPlayers[playerId]);
+					console.log("Object.size(games[gameId].clientPlayers): " + Object.size(games[gameId].clientPlayers));
+					console.log("games[gameId].finish: " + games[gameId].finish);
 					if(games[gameId].finishPlayers[playerId] != true){
-						//console.log("delete games[gameId].clientPlayers[playerId]: " + playerId);
+						console.log("delete games[gameId].clientPlayers[playerId]: " + playerId);
 						delete games[gameId].clientPlayers[playerId];
-						//console.log("Size remain: " + Object.size(games[gameId].clientPlayers));
+						console.log("Size remain: " + Object.size(games[gameId].clientPlayers));
 					}
 						
 					if(Object.size(games[gameId].clientPlayers) <= 1 || games[gameId].finish >= Object.size(games[gameId].clientPlayers)) {
@@ -180,17 +180,17 @@ game_server.onUserDisconnect = function(sId) {
 				}
 					
 			}
-			//console.log("groupTestTmp: " +JSON.stringify(groupTestTmp));
+			console.log("groupTestTmp: " +JSON.stringify(groupTestTmp));
 			if(groupTestTmp.hasOwnProperty(sId)){
 				var obj = {};
 				obj.sender = groupTestTmp[sId];
 				obj.player = socketsOfClients[sId];
-				//console.log("object: " + JSON.stringify(obj));
+				console.log("object: " + JSON.stringify(obj));
 				onExitWaitingGame(sId, obj);
 			}
-			//console.log("Grouptest keys: " + JSON.stringify(groupTestKeys));
+			console.log("Grouptest keys: " + JSON.stringify(groupTestKeys));
 			if (groupTestKeys.hasOwnProperty(playerId)) {
-				//console.log(playerId +  " Cancel group grest " + JSON.stringify( groupTestKeys[playerId]) );
+				console.log(playerId +  " Cancel group grest " + JSON.stringify( groupTestKeys[playerId]) );
 				cancelGroupTest(playerId, groupTestKeys[playerId]);
 			}
 			delete players[socketsOfClients[sId]];
@@ -198,12 +198,12 @@ game_server.onUserDisconnect = function(sId) {
 			delete socketsOfClients[sId];
 		}
 	} catch (err) {
-		//console.log("ERORR onUserDisconnect: " + JSON.stringify(err));
+		console.log("ERORR onUserDisconnect: " + JSON.stringify(err));
 	}
 };
 
 function cancelGroupTest (playerId, otherPlayers) {
-	//console.log("Player: " + playerId + " cancel GroupTest");
+	console.log("Player: " + playerId + " cancel GroupTest");
 	var dataToSend = {};
 	dataToSend.notice = "cancelGroupTest";
 	dataToSend.data = {"player":playerId};
@@ -216,7 +216,7 @@ function cancelGroupTest (playerId, otherPlayers) {
 
 
 game_server.onUserQuitGame = function(sId) {
-	//console.log("Player: " + clients[socketsOfClients[sId]] + " Quit game");
+	console.log("Player: " + clients[socketsOfClients[sId]] + " Quit game");
 	try {
 		if (socketsOfClients.hasOwnProperty(sId)) {
 			if (currentGameOfPlayer.hasOwnProperty(socketsOfClients[sId])) {
@@ -246,7 +246,7 @@ game_server.onUserQuitGame = function(sId) {
 			}
 		}
 	} catch (err) {
-		//console.log("ERORR onUserQuitGame: " + JSON.stringify(err));
+		console.log("ERORR onUserQuitGame: " + JSON.stringify(err));
 	}
 };
 
@@ -257,11 +257,11 @@ function removeFromObjectByKey(key) {
 game_server.getAvailablePlayers = function(sId, obj) {
 	try {
 		var availableUsers = new Array();
-		//console.log("online users: " + JSON.stringify(players));
+		console.log("online users: " + JSON.stringify(players));
 		var i = 0;
 		Object.keys(players).forEach(
 				function(playerId) {
-					//console.log("PlayerId: " + playerId);
+					console.log("PlayerId: " + playerId);
 					if (players[playerId].appName == obj.appName
 							&& players[playerId].status == 1)
 						if (i <= 20) {
@@ -269,7 +269,7 @@ game_server.getAvailablePlayers = function(sId, obj) {
 						}
 					i++;
 				});
-		//console.log('Sending availableUsers to ' + sId);
+		console.log('Sending availableUsers to ' + sId);
 
 		var dataToSend = {
 			"notice" : TYPE_ONLINE_PLAYERS,
@@ -280,15 +280,15 @@ game_server.getAvailablePlayers = function(sId, obj) {
 		sendMessageToPlayer(sId, dataToSend);
 
 	} catch (err) {
-		//console.log("Error when get getAvailablePlayers: "+ JSON.stringify(err));
+		console.log("Error when get getAvailablePlayers: "+ JSON.stringify(err));
 	}
 }; //game_server.getAvailablePlayers
 
 game_server.findPlayer = function(obj) {
-	//console.log("findPlayer : " + JSON.stringify(obj));
+	console.log("findPlayer : " + JSON.stringify(obj));
 	var dataToSend = {};
 	dataToSend.notice = TYPE_FOUND_PLAYER;
-	//console.log('looking for a player for user: ' + obj.sender);
+	console.log('looking for a player for user: ' + obj.sender);
 	var playerId = obj.player;
 	if (players.hasOwnProperty(playerId)) {
 		if (playerId != obj.sender && players[playerId].status == 1) {
@@ -296,33 +296,33 @@ game_server.findPlayer = function(obj) {
 				"player" : players[playerId],
 				"available" : true
 			};
-			//console.log('found user: ' + JSON.stringify(playerName));
+			console.log('found user: ' + JSON.stringify(playerName));
 		} else {
 			dataToSend.data = {
 				"player" :  players[playerId],
 				"available" : false
 			};
-			//console.log('player:' + JSON.stringify(playerName)+ " not available");
+			console.log('player:' + JSON.stringify(playerName)+ " not available");
 		}
 	} else {
 		dataToSend.data = {
 			"player" :  {"playerId" : playerId, "playerName" :""},
 			"available" : false
 		};
-		//console.log('not found user: ' + JSON.stringify(playerName));
+		console.log('not found user: ' + JSON.stringify(playerName));
 	}
 	sendMessageToPlayer(clients[obj.sender], dataToSend);
 }; //game_server.findPlayer
 
 game_server.findGame = function(obj) {
 	var dataToSend = {};
-	//console.log('looking for a game for user: ' + obj.data.sender);
+	console.log('looking for a game for user: ' + obj.data.sender);
 	for ( var playerId in players) {
-		//console.log(JSON.stringify(playerId));
+		console.log(JSON.stringify(playerId));
 		if (playerId != obj.sender && players[playerId].status == 1) {
 			dataToSend.notice = TYPE_INVITE;
 			dataToSend.data = obj;
-			//console.log('found user: ' + JSON.stringify(playerId));
+			console.log('found user: ' + JSON.stringify(playerId));
 			sendMessageToPlayer(clients[playerId], dataToSend);
 			break;
 		}
@@ -331,12 +331,12 @@ game_server.findGame = function(obj) {
 
 game_server.inviteToGame = function(sId, obj) {
 	var dataToSend = {};
-	//console.log('looking for a game for user: ' + obj.data.sender);
+	console.log('looking for a game for user: ' + obj.data.sender);
 	obj.data.friends.forEach(function(playerId) {
 		if (players[playerId].status == 1) {
 			dataToSend.notice = TYPE_INVITE;
 			dataToSend.data = obj.data;
-			//console.log('send invite to user: ' + JSON.stringify(playerId));
+			console.log('send invite to user: ' + JSON.stringify(playerId));
 			sendMessageToPlayer(clients[playerId], dataToSend);
 		} else {
 			dataToSend.notice = TYPE_PLAYER_NOT_AVAILABLE;
@@ -350,9 +350,9 @@ game_server.inviteToGame = function(sId, obj) {
 }; //game_server.inviteToGame
 
 game_server.confirmJoinGame = function(sId, obj) {
-	//console.log("Available user: " + JSON.stringify(clients));
+	console.log("Available user: " + JSON.stringify(clients));
 	var dataToSend = {};
-	//console.log('send confirm to sender: ' + obj.sender);
+	console.log('send confirm to sender: ' + obj.sender);
 	if(obj.gameRule == 2) {
 		groupTestTmp[sId] = obj.sender;
 		if(!groupTestKeys.hasOwnProperty(obj.sender)) {
@@ -371,10 +371,10 @@ game_server.startGroupTest = function(gameId, obj) {
 	}
 	catch (err) {
 	}
-	//console.log("JSON.stringify(obj.game) :        " + JSON.stringify(obj.game));
+	console.log("JSON.stringify(obj.game) :        " + JSON.stringify(obj.game));
 	var gameToSave = obj.game;
 	var dataToSend = {};
-	//console.log("Game before save: " + JSON.stringify(gameToSave));
+	console.log("Game before save: " + JSON.stringify(gameToSave));
 	games[gameId] = gameToSave;
 	gameToSave.gameId = gameId;
 	obj.game = gameToSave;
@@ -389,17 +389,17 @@ game_server.startGroupTest = function(gameId, obj) {
 					delete groupTestTmp[clients[playerId]];
 				});
 	} catch (err) {
-		//console.log("Err: " + JSON.stringify(err));
+		console.log("Err: " + JSON.stringify(err));
 	}
 	if (recordIntervals.hasOwnProperty(gameId)) {
 		try {
 			clearTimeout(recordIntervals[gameId]);
 			delete recordIntervals[gameId];
 		} catch (err) {
-			//console.log("Err: " + JSON.stringify(err));
+			console.log("Err: " + JSON.stringify(err));
 		}
 	}
-	//console.log("game saved with: " + JSON.stringify(games[gameId]));
+	console.log("game saved with: " + JSON.stringify(games[gameId]));
 	var timeToEndGame = games[gameId].roundNum * games[gameId].intervalTime;
 	games[gameId].finish  = 0;
 	games[gameId].finishPlayers = {};
@@ -415,7 +415,7 @@ game_server.exitWaitingGame = function(sId, obj) {
 }; //game_server.startGroupTest
 
 function onExitWaitingGame (sId, obj) {
-	//console.log("On user exit waiting game: " + JSON.stringify(obj));
+	console.log("On user exit waiting game: " + JSON.stringify(obj));
 	var dataToSend = {};
 	dataToSend.notice = "exitWaitingGame";
 	dataToSend.data = {"player":obj.player};
@@ -436,7 +436,7 @@ game_server.onPlayerFinishGroupTest = function(obj) {
 	var finish = games[gameId].finish + 1;
 	games[gameId].finish = finish;
 	games[gameId].finishPlayers[obj.player] = true;
-	//console.log("Players remain: " + Object.size(games[gameId].clientPlayers) - finish);
+	console.log("Players remain: " + Object.size(games[gameId].clientPlayers) - finish);
 	if(finish >= Object.size(games[gameId].clientPlayers)){
 		endGroupTest(gameId);
 	}
@@ -444,12 +444,12 @@ game_server.onPlayerFinishGroupTest = function(obj) {
 
 //TODO
 function startGroupTestTimer(gameId, timeToEndGame) {
-	//console.log("End group test in " + timeToEndGame + " s");
+	console.log("End group test in " + timeToEndGame + " s");
 		var start_time = new Date();
 		var interval = setTimeout(function() {
 			try {
 				clearTimeout(interval);
-				//console.log("End group test");
+				console.log("End group test");
 				endGroupTest(gameId);
 			} catch (err) {
 				
@@ -460,7 +460,7 @@ function startGroupTestTimer(gameId, timeToEndGame) {
 
 function endGroupTest(gameId) {
 	if (games.hasOwnProperty(gameId)) {
-		//console.log("end Group Test! zzzzzzzzzzzzzzzzz: "+ JSON.stringify(games[gameId]));
+		console.log("end Group Test! zzzzzzzzzzzzzzzzz: "+ JSON.stringify(games[gameId]));
 		clearTimeout(recordIntervals[gameId]);
 		var dataToSend = {};
 		dataToSend.notice = "endGroupTest";
@@ -471,7 +471,7 @@ function endGroupTest(gameId) {
 			try {
 				delete recordIntervals[gameId];
 				delete numberOfPlayerAnswer[gameId];
-				//console.log(JSON.stringify(games));
+				console.log(JSON.stringify(games));
 				Object.keys(games[gameId].clientPlayers).forEach(
 						function(playerId) {
 							if (currentGameOfPlayer.hasOwnProperty(playerId)) {
@@ -482,17 +482,17 @@ function endGroupTest(gameId) {
 						});
 				delete games[gameId];
 			} catch (err) {
-				//console.log("Error when delete data to endGame: "+ JSON.stringify(err));
+				console.log("Error when delete data to endGame: "+ JSON.stringify(err));
 			}
 		}, 3 * 1000);
 	}
 }
 
 game_server.startGame = function(gameId, obj) {
-	//console.log("JSON.stringify(obj.game) :        " + JSON.stringify(obj.game));
+	console.log("JSON.stringify(obj.game) :        " + JSON.stringify(obj.game));
 	var gameToSave = obj.game;
 	var dataToSend = {};
-	//console.log("Game before save: " + JSON.stringify(gameToSave));
+	console.log("Game before save: " + JSON.stringify(gameToSave));
 	games[gameId] = gameToSave;
 	gameToSave.gameId = gameId;
 	obj.game = gameToSave;
@@ -506,7 +506,7 @@ game_server.startGame = function(gameId, obj) {
 					sendMessageToPlayer(clients[playerId], dataToSend);
 				});
 	} catch (err) {
-		//console.log("Err: " + JSON.stringify(err));
+		console.log("Err: " + JSON.stringify(err));
 	}
 	numberOfPlayerAnswer[gameId] = 0;
 	games[gameId].passedRound = {};
@@ -515,7 +515,7 @@ game_server.startGame = function(gameId, obj) {
 			clearTimeout(recordIntervals[gameId]);
 			delete recordIntervals[gameId];
 		} catch (err) {
-			//console.log("Err: " + JSON.stringify(err));
+			console.log("Err: " + JSON.stringify(err));
 		}
 	}
 	games[gameId].scores = new Array();
@@ -525,7 +525,7 @@ game_server.startGame = function(gameId, obj) {
 				s[playerId] = 0;
 				games[gameId].scores.push(s);
 			});
-	//console.log("game saved with: " + JSON.stringify(games[gameId]));
+	console.log("game saved with: " + JSON.stringify(games[gameId]));
 	setTimeout(
 			function() {
 				recordIntervals[gameId] = startIntervalTimer(gameId,
@@ -550,11 +550,11 @@ function onQuizAnswer(obj) {
 	var gameId = obj.gameId;
 	var round = obj.round;
 	if (games.hasOwnProperty(gameId) && (games[gameId].currRound == round)) {
-		//console.log("games.hasOwnProperty(gameId) && (games.currRound === round)");
+		console.log("games.hasOwnProperty(gameId) && (games.currRound === round)");
 		//var dataToSend = {};
 		numberOfPlayerAnswer[gameId] = numberOfPlayerAnswer[gameId] + 1;
-		//console.log(gameId + " --- " + obj.questionId + " ----- " + obj.result+ " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
-		//console.log("Found game: " + JSON.stringify(games[gameId]));
+		console.log(gameId + " --- " + obj.questionId + " ----- " + obj.result+ " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
+		console.log("Found game: " + JSON.stringify(games[gameId]));
 		if (games[gameId].passedRound[round] != true) // undefined or false
 			games[gameId].passedRound[round] = false;
 		try {
@@ -576,7 +576,7 @@ function onQuizAnswer(obj) {
 							sendMessageToPlayer(clients[playerId], dataToSend);
 						}
 					});
-			//console.log("Player length: " + Object.size(games[gameId].clientPlayers));
+			console.log("Player length: " + Object.size(games[gameId].clientPlayers));
 			if (games[gameId].passedRound[round] == false
 					&& (obj.result == 'true' || numberOfPlayerAnswer[gameId] >= Object.size(games[gameId].clientPlayers))) {
 				clearTimeout(recordIntervals[gameId]);
@@ -584,9 +584,9 @@ function onQuizAnswer(obj) {
 				//gameRounds[gameId] = gameRounds[gameId] - 1;
 				games[gameId].currRound = games[gameId].currRound + 1;
 				numberOfPlayerAnswer[gameId] = 0;
-				////console.log("Game round remain: " + gameRounds[gameId]);
+				//console.log("Game round remain: " + gameRounds[gameId]);
 				if (games[gameId].currRound < games[gameId].roundNum) {
-					//console.log("Request next round");
+					console.log("Request next round");
 					setTimeout(function() {
 						sendRequestNextRoundToAll(games[gameId]);
 						if (recordIntervals.hasOwnProperty(gameId)) {
@@ -603,10 +603,10 @@ function onQuizAnswer(obj) {
 				}
 			}
 		} catch (err) {
-			//console.log("Error when process player answer: " + JSON.stringify(err));
+			console.log("Error when process player answer: " + JSON.stringify(err));
 		}
 	} else {
-		//console.log(" nonnnnnnnnnnnnnnnn games.hasOwnProperty(gameId) && (games.currRound === round) ");
+		console.log(" nonnnnnnnnnnnnnnnn games.hasOwnProperty(gameId) && (games.currRound === round) ");
 	}
 }
 
@@ -614,7 +614,7 @@ function onMatchingAnswer(obj) {
 	var gameId = obj.gameId;
 	var round = obj.round;
 	if (games.hasOwnProperty(gameId) && (games[gameId].currRound == round)) {
-		//console.log("Found game: " + JSON.stringify(games[gameId]));
+		console.log("Found game: " + JSON.stringify(games[gameId]));
 		if (games[gameId].passedRound[round] != true) // undefined or false
 			games[gameId].passedRound[round] = false;
 		try {
@@ -639,7 +639,7 @@ function onMatchingAnswer(obj) {
 				games[gameId].passedRound[round] = true;
 				games[gameId].currRound = games[gameId].currRound + 1;
 				if (games[gameId].currRound < games[gameId].roundNum) {
-					//console.log("Request next round");
+					console.log("Request next round");
 					setTimeout(function() {
 						sendRequestNextRoundToAll(games[gameId]);
 						if (recordIntervals.hasOwnProperty(gameId)) {
@@ -656,17 +656,17 @@ function onMatchingAnswer(obj) {
 				}
 			}
 		} catch (err) {
-			//console.log("Error when process player answer: "+ JSON.stringify(err));
+			console.log("Error when process player answer: "+ JSON.stringify(err));
 		}
 	} else {
-		//console.log(" nonnnnnnnnnnnnnnnn games.hasOwnProperty(gameId) && (games.currRound === round) ");
+		console.log(" nonnnnnnnnnnnnnnnn games.hasOwnProperty(gameId) && (games.currRound === round) ");
 	}
 }
 
 game_server.onReceiveRqEndGame = function(obj) {
 	var gameId = obj.gameId;
-	//console.log("Game with id: " + gameId + " receive request to end!");
-	//console.log("Current Games: " + JSON.stringify(games));
+	console.log("Game with id: " + gameId + " receive request to end!");
+	console.log("Current Games: " + JSON.stringify(games));
 	if (games.hasOwnProperty(gameId)) {
 		clearTimeout(recordIntervals[gameId]);
 		endgame(gameId);
@@ -701,7 +701,7 @@ function startIntervalTimer(gameId, timerInterval) {
 				if (games[gameId].currRound < games[gameId].roundNum) {
 					var end_time = new Date();
 					var dif = end_time.getTime() - start_time.getTime();
-					//console.log("Tick no. " + count + " after "+ Math.round(dif / 1000) + " seconds");
+					console.log("Tick no. " + count + " after "+ Math.round(dif / 1000) + " seconds");
 					numberOfPlayerAnswer[gameId] = 0;
 					sendRequestNextRoundToAll(games[gameId]);
 					count++;
@@ -722,7 +722,7 @@ function startIntervalTimer(gameId, timerInterval) {
 function endWhenPlayerQuitGame(gameId, notice, data) {
 	clearTimeout(recordIntervals[gameId]);
 	if (games.hasOwnProperty(gameId)) {
-		//console.log("End game! zzzzzzzzzzzzzzzzz: "+ JSON.stringify(games[gameId]));
+		console.log("End game! zzzzzzzzzzzzzzzzz: "+ JSON.stringify(games[gameId]));
 		var dataToSend = {};
 		dataToSend.notice = notice;
 		data.scores = games[gameId].scores;
@@ -732,10 +732,10 @@ function endWhenPlayerQuitGame(gameId, notice, data) {
 			delete recordIntervals[gameId];
 			delete numberOfPlayerAnswer[gameId];
 			//delete gameRounds[gameId];
-			//console.log(JSON.stringify(games));
+			console.log(JSON.stringify(games));
 			Object.keys(games[gameId].clientPlayers).forEach(
 					function(playerId) {
-						//console.log("set status for user: " + playerId);
+						console.log("set status for user: " + playerId);
 						players[playerId].status = 1;
 						if (currentGameOfPlayer.hasOwnProperty(playerId)) {
 							delete currentGameOfPlayer[playerId];
@@ -743,14 +743,14 @@ function endWhenPlayerQuitGame(gameId, notice, data) {
 					});
 			delete games[gameId];
 		} catch (err) {
-			//console.log("Error when delete data to endGame: "+ JSON.stringify(err));
+			console.log("Error when delete data to endGame: "+ JSON.stringify(err));
 		}
 	}
 }
 
 function endgame(gameId) {
 	if (games.hasOwnProperty(gameId)) {
-		//console.log("End game! zzzzzzzzzzzzzzzzz: "+ JSON.stringify(games[gameId]));
+		console.log("End game! zzzzzzzzzzzzzzzzz: "+ JSON.stringify(games[gameId]));
 		var dataToSend = {};
 		dataToSend.notice = "endGame";
 		dataToSend.data = {
@@ -761,7 +761,7 @@ function endgame(gameId) {
 			try {
 				delete recordIntervals[gameId];
 				delete numberOfPlayerAnswer[gameId];
-				//console.log(JSON.stringify(games));
+				console.log(JSON.stringify(games));
 				Object.keys(games[gameId].clientPlayers).forEach(
 						function(playerId) {
 							if (currentGameOfPlayer.hasOwnProperty(playerId)) {
@@ -772,14 +772,14 @@ function endgame(gameId) {
 						});
 				delete games[gameId];
 			} catch (err) {
-				//console.log("Error when delete data to endGame: "+ JSON.stringify(err));
+				console.log("Error when delete data to endGame: "+ JSON.stringify(err));
 			}
 		}, 3 * 1000);
 	}
 }
 
 function sendRequestNextRoundToAll(game) {
-	//console.log("sendRequestNextRoundToAll");
+	console.log("sendRequestNextRoundToAll");
 	if (typeof game != undefined) {
 		var dataToSend = {};
 		dataToSend.notice = "nextRound";
@@ -788,7 +788,7 @@ function sendRequestNextRoundToAll(game) {
 			"scores" : game.scores
 		};
 		sendMessageToAll(game, dataToSend);
-		//console.log("game saved: " + JSON.stringify(game));
+		console.log("game saved: " + JSON.stringify(game));
 	}
 }
 
@@ -808,7 +808,7 @@ function sendMessageToAll(game, msg) {
 						
 					});
 		} catch (err) {
-			//console.log("Error when send msg to all");
+			console.log("Error when send msg to all");
 		}
 	}
 }
@@ -817,7 +817,7 @@ function sendMessageToPlayer(sId, msg) {
 	try {
 		app_server.sendMsgToClient(sId, msg);
 	} catch (err) {
-		//console.log("Error when send msg to client: " + sId);
+		console.log("Error when send msg to client: " + sId);
 	}
 }
 
