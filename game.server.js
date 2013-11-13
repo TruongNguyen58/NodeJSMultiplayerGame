@@ -97,7 +97,7 @@ function onUserConnect(sId, playerData) {
 						console.log("Size remain: " + Object.size(games[gameId].clientPlayers));
 					}
 						
-					if(Object.size(games[gameId].clientPlayers) <= 1 || games[gameId].finish <= Object.size(games[gameId].clientPlayers)) {
+					if(Object.size(games[gameId].clientPlayers) <= 1 || games[gameId].finish >= Object.size(games[gameId].clientPlayers)) {
 						endGroupTest(gameId);
 					}
 					if (currentGameOfPlayer.hasOwnProperty(playerId)) {
@@ -173,7 +173,7 @@ game_server.onUserDisconnect = function(sId) {
 						console.log("Size remain: " + Object.size(games[gameId].clientPlayers));
 					}
 						
-					if(Object.size(games[gameId].clientPlayers) <= 1 || games[gameId].finish <= Object.size(games[gameId].clientPlayers)) {
+					if(Object.size(games[gameId].clientPlayers) <= 1 || games[gameId].finish >= Object.size(games[gameId].clientPlayers)) {
 						endGroupTest(gameId);
 					}
 					if (currentGameOfPlayer.hasOwnProperty(playerId)) {
