@@ -85,7 +85,7 @@ io.sockets.on('connection', function(socket) {
 			} else if (obj.type == "startGame") {
 				game_server.startGame(socket.id, obj);
 			}else if (obj.type == "exitWaitingGame") {
-				game_server.exitWaitingGame(obj);
+				game_server.exitWaitingGame(socket.id, obj);
 			} else if (obj.type == "startGroupTest") {
 				game_server.startGroupTest(socket.id, obj);
 			} else if (obj.type == "finishGroupTest") {

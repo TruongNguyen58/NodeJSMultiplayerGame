@@ -27,6 +27,7 @@ var games = {};
 var players = {};
 var currentGameOfPlayer = {};
 var groupTestTmp = {};
+var groupTestKeys = {};
 
 var game_server = module.exports, app_server = require('./app.js'), verbose = true;
 
@@ -99,6 +100,9 @@ function onUserConnect(sId, playerData) {
 					if (currentGameOfPlayer.hasOwnProperty(playerId)) {
 							delete currentGameOfPlayer[playerId];
 					}
+					if (groupTestKeys.hasOwnProperty(playerId)) {
+						cancelGroupTest(playerId, groupTestKeys[playerId]);
+					}
 				}
 			}
 		} catch (err) {
@@ -167,7 +171,10 @@ game_server.onUserDisconnect = function(sId) {
 						endGroupTest(gameId);
 					}
 					if (currentGameOfPlayer.hasOwnProperty(playerId)) {
-							delete currentGameOfPlayer[playerId];
+						delete currentGameOfPlayer[playerId];
+					}
+					if (groupTestKeys.hasOwnProperty(playerId)) {
+						cancelGroupTest(playerId, groupTestKeys[playerId]);
 					}
 				}
 					
@@ -178,7 +185,7 @@ game_server.onUserDisconnect = function(sId) {
 				obj.sender = groupTestTmp[sId];
 				obj.player = socketsOfClients[sId];
 				console.log("object: " + JSON.stringify(obj));
-				onExitWaitingGame(obj);
+				onExitWaitingGame(sId, obj);
 			}
 			delete players[socketsOfClients[sId]];
 			delete clients[socketsOfClients[sId]];
@@ -188,6 +195,19 @@ game_server.onUserDisconnect = function(sId) {
 		console.log("ERORR onUserDisconnect: " + JSON.stringify(err));
 	}
 };
+
+function cancelGroupTest (playerId, otherPlayers) {
+	console.log("Player: " + playerId + " cancel GroupTest");
+	var dataToSend = {};
+	dataToSend.notice = "cancelGroupTest";
+	dataToSend.data = {"player":playerId};
+	for(otherPlayer in otherPlayers) {
+		app_server.sendMsgToClient(otherPlayer, dataToSend);
+		delete groupTestTmp[otherPlayer];
+	}
+	delete groupTestKeys[playerId];
+}
+
 
 game_server.onUserQuitGame = function(sId) {
 	console.log("Player: " + clients[socketsOfClients[sId]] + " Quit game");
@@ -329,13 +349,24 @@ game_server.confirmJoinGame = function(sId, obj) {
 	console.log("Available user: " + JSON.stringify(clients));
 	var dataToSend = {};
 	console.log('send confirm to sender: ' + obj.sender);
-	groupTestTmp[sId] = obj.sender;
+	if(obj.gameRule == 2) {
+		groupTestTmp[sId] = obj.sender;
+		if(!groupTestKeys.hasOwnProperty(obj.sender)) {
+			groupTestKeys[obj.sender] = new Array();
+		}
+		groupTestKeys[obj.sender].push(sId);
+	}
 	dataToSend.notice = "receiveConfirm"
 	dataToSend.data = obj;
 	app_server.sendMsgToClient(clients[obj.sender], dataToSend);
 }; //game_server.confirmJoinGame
 
 game_server.startGroupTest = function(gameId, obj) {
+	try{
+		delete groupTestKeys[socketsOfClients[gameId]];
+	}
+	catch (err) {
+	}
 	console.log("JSON.stringify(obj.game) :        " + JSON.stringify(obj.game));
 	var gameToSave = obj.game;
 	var dataToSend = {};
@@ -375,17 +406,25 @@ game_server.startGroupTest = function(gameId, obj) {
 	//}
 }; //game_server.startGroupTest
 
-game_server.exitWaitingGame = function(obj) {
-	onExitWaitingGame(obj);
+game_server.exitWaitingGame = function(sId, obj) {
+	onExitWaitingGame(sId, obj);
 }; //game_server.startGroupTest
 
-function onExitWaitingGame (obj) {
+function onExitWaitingGame (sId, obj) {
 	console.log("On user exit waiting game: " + JSON.stringify(obj));
 	var dataToSend = {};
 	dataToSend.notice = "exitWaitingGame";
 	dataToSend.data = {"player":obj.player};
 	app_server.sendMsgToClient(clients[obj.sender], dataToSend);
 	delete groupTestTmp[clients[obj.player]];
+	try{
+		var index = groupTestKeys[obj.sender].indexOf(sId);
+		if (index > -1) {
+	    	groupTestKeys[obj.sender].splice(index, 1);
+		}
+	}
+	catch (err) {
+	}
 }
 
 game_server.onPlayerFinishGroupTest = function(obj) {
