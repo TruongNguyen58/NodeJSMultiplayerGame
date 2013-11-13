@@ -89,6 +89,8 @@ function onUserConnect(sId, playerData) {
 				}
 				else if(games[gameId].gameRule == 2){
 					console.log("games[gameId].finishPlayers[playerId]: " + games[gameId].finishPlayers[playerId]);
+					console.log("Object.size(games[gameId].clientPlayers): " + Object.size(games[gameId].clientPlayers));
+					console.log("games[gameId].finish: " + games[gameId].finish);
 					if(games[gameId].finishPlayers[playerId] != true){
 						console.log("delete games[gameId].clientPlayers[playerId]: " + playerId);
 						delete games[gameId].clientPlayers[playerId];
@@ -163,6 +165,8 @@ game_server.onUserDisconnect = function(sId) {
 				}
 				else {
 					console.log("games[gameId].finishPlayers[playerId]: " + games[gameId].finishPlayers[playerId]);
+					console.log("Object.size(games[gameId].clientPlayers): " + Object.size(games[gameId].clientPlayers));
+					console.log("games[gameId].finish: " + games[gameId].finish);
 					if(games[gameId].finishPlayers[playerId] != true){
 						console.log("delete games[gameId].clientPlayers[playerId]: " + playerId);
 						delete games[gameId].clientPlayers[playerId];
