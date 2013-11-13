@@ -49,9 +49,7 @@ game_server.chat = function(obj) {
 	dataToSend.data = obj;
 	obj.players.forEach(function(player) {
 		if (clients.hasOwnProperty(player)) {
-			//console.log("begin chat with user: " + player + " -- ID: "
-					+ clients[player] + " -- dataToSend: "
-					+ JSON.stringify(dataToSend));
+			//console.log("begin chat with user: " + player + " -- ID: "+ clients[player] + " -- dataToSend: "+ JSON.stringify(dataToSend));
 			sendMessageToPlayer(clients[player], dataToSend)
 		}
 	});
@@ -122,9 +120,7 @@ function onUserConnect(sId, playerData) {
 	//console.log("Current player: " + JSON.stringify(players[playerId]));
 	Object.keys(socketsOfClients).forEach(
 			function(oldSocketId) {
-				//console.log("Key: " + oldSocketId + " Value: "
-						+ socketsOfClients[oldSocketId] + " PlayerName: "
-						+ playerId);
+				//console.log("Key: " + oldSocketId + " Value: "+ socketsOfClients[oldSocketId] + " PlayerName: "+ playerId);
 				if (socketsOfClients[oldSocketId] == 	playerId) {
 					delete socketsOfClients[oldSocketId];
 				}
@@ -148,11 +144,8 @@ game_server.onUserDisconnect = function(sId) {
 		var i = 0;
 		//ad.hasOwnProperty(prop)
 		if (socketsOfClients.hasOwnProperty(sId)) {
-			//console
-					.log("Player: " + socketsOfClients[sId]
-							+ " Disconnect game");
-			//console.log("currentGameOfPlayer: "
-					+ JSON.stringify(currentGameOfPlayer));
+			//console.log("Player: " + socketsOfClients[sId]+ " Disconnect game");
+			//console.log("currentGameOfPlayer: "+ JSON.stringify(currentGameOfPlayer));
 			var playerId = socketsOfClients[sId];
 			if (currentGameOfPlayer.hasOwnProperty(socketsOfClients[sId])) {
 				var gameId = currentGameOfPlayer[socketsOfClients[sId]];
@@ -287,8 +280,7 @@ game_server.getAvailablePlayers = function(sId, obj) {
 		sendMessageToPlayer(sId, dataToSend);
 
 	} catch (err) {
-		//console.log("Error when get getAvailablePlayers: "
-				+ JSON.stringify(err));
+		//console.log("Error when get getAvailablePlayers: "+ JSON.stringify(err));
 	}
 }; //game_server.getAvailablePlayers
 
@@ -310,8 +302,7 @@ game_server.findPlayer = function(obj) {
 				"player" :  players[playerId],
 				"available" : false
 			};
-			//console.log('player:' + JSON.stringify(playerName)
-					+ " not available");
+			//console.log('player:' + JSON.stringify(playerName)+ " not available");
 		}
 	} else {
 		dataToSend.data = {
@@ -469,8 +460,7 @@ function startGroupTestTimer(gameId, timeToEndGame) {
 
 function endGroupTest(gameId) {
 	if (games.hasOwnProperty(gameId)) {
-		//console.log("end Group Test! zzzzzzzzzzzzzzzzz: "
-				+ JSON.stringify(games[gameId]));
+		//console.log("end Group Test! zzzzzzzzzzzzzzzzz: "+ JSON.stringify(games[gameId]));
 		clearTimeout(recordIntervals[gameId]);
 		var dataToSend = {};
 		dataToSend.notice = "endGroupTest";
@@ -492,8 +482,7 @@ function endGroupTest(gameId) {
 						});
 				delete games[gameId];
 			} catch (err) {
-				//console.log("Error when delete data to endGame: "
-						+ JSON.stringify(err));
+				//console.log("Error when delete data to endGame: "+ JSON.stringify(err));
 			}
 		}, 3 * 1000);
 	}
@@ -564,8 +553,7 @@ function onQuizAnswer(obj) {
 		//console.log("games.hasOwnProperty(gameId) && (games.currRound === round)");
 		//var dataToSend = {};
 		numberOfPlayerAnswer[gameId] = numberOfPlayerAnswer[gameId] + 1;
-		//console.log(gameId + " --- " + obj.questionId + " ----- " + obj.result
-				+ " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
+		//console.log(gameId + " --- " + obj.questionId + " ----- " + obj.result+ " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
 		//console.log("Found game: " + JSON.stringify(games[gameId]));
 		if (games[gameId].passedRound[round] != true) // undefined or false
 			games[gameId].passedRound[round] = false;
@@ -615,12 +603,10 @@ function onQuizAnswer(obj) {
 				}
 			}
 		} catch (err) {
-			conso
-			le.log("Error when process player answer: " + JSON.stringify(err));
+			//console.log("Error when process player answer: " + JSON.stringify(err));
 		}
 	} else {
-		//console
-				.log(" nonnnnnnnnnnnnnnnn games.hasOwnProperty(gameId) && (games.currRound === round) ");
+		//console.log(" nonnnnnnnnnnnnnnnn games.hasOwnProperty(gameId) && (games.currRound === round) ");
 	}
 }
 
@@ -670,12 +656,10 @@ function onMatchingAnswer(obj) {
 				}
 			}
 		} catch (err) {
-			//console.log("Error when process player answer: "
-					+ JSON.stringify(err));
+			//console.log("Error when process player answer: "+ JSON.stringify(err));
 		}
 	} else {
-		//console
-				.log(" nonnnnnnnnnnnnnnnn games.hasOwnProperty(gameId) && (games.currRound === round) ");
+		//console.log(" nonnnnnnnnnnnnnnnn games.hasOwnProperty(gameId) && (games.currRound === round) ");
 	}
 }
 
@@ -717,8 +701,7 @@ function startIntervalTimer(gameId, timerInterval) {
 				if (games[gameId].currRound < games[gameId].roundNum) {
 					var end_time = new Date();
 					var dif = end_time.getTime() - start_time.getTime();
-					//console.log("Tick no. " + count + " after "
-							+ Math.round(dif / 1000) + " seconds");
+					//console.log("Tick no. " + count + " after "+ Math.round(dif / 1000) + " seconds");
 					numberOfPlayerAnswer[gameId] = 0;
 					sendRequestNextRoundToAll(games[gameId]);
 					count++;
@@ -739,8 +722,7 @@ function startIntervalTimer(gameId, timerInterval) {
 function endWhenPlayerQuitGame(gameId, notice, data) {
 	clearTimeout(recordIntervals[gameId]);
 	if (games.hasOwnProperty(gameId)) {
-		//console.log("End game! zzzzzzzzzzzzzzzzz: "
-				+ JSON.stringify(games[gameId]));
+		//console.log("End game! zzzzzzzzzzzzzzzzz: "+ JSON.stringify(games[gameId]));
 		var dataToSend = {};
 		dataToSend.notice = notice;
 		data.scores = games[gameId].scores;
@@ -761,16 +743,14 @@ function endWhenPlayerQuitGame(gameId, notice, data) {
 					});
 			delete games[gameId];
 		} catch (err) {
-			//console.log("Error when delete data to endGame: "
-					+ JSON.stringify(err));
+			//console.log("Error when delete data to endGame: "+ JSON.stringify(err));
 		}
 	}
 }
 
 function endgame(gameId) {
 	if (games.hasOwnProperty(gameId)) {
-		//console.log("End game! zzzzzzzzzzzzzzzzz: "
-				+ JSON.stringify(games[gameId]));
+		//console.log("End game! zzzzzzzzzzzzzzzzz: "+ JSON.stringify(games[gameId]));
 		var dataToSend = {};
 		dataToSend.notice = "endGame";
 		dataToSend.data = {
@@ -792,8 +772,7 @@ function endgame(gameId) {
 						});
 				delete games[gameId];
 			} catch (err) {
-				//console.log("Error when delete data to endGame: "
-						+ JSON.stringify(err));
+				//console.log("Error when delete data to endGame: "+ JSON.stringify(err));
 			}
 		}, 3 * 1000);
 	}
