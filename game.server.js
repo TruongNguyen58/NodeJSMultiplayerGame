@@ -173,6 +173,7 @@ game_server.onUserDisconnect = function(sId) {
 					if (currentGameOfPlayer.hasOwnProperty(playerId)) {
 						delete currentGameOfPlayer[playerId];
 					}
+					console.log("Grouptest keys: " + JSON.stringify(groupTestKeys));
 					if (groupTestKeys.hasOwnProperty(playerId)) {
 						cancelGroupTest(playerId, groupTestKeys[playerId]);
 					}
