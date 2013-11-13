@@ -203,7 +203,7 @@ function cancelGroupTest (playerId, otherPlayers) {
 	var dataToSend = {};
 	dataToSend.notice = "cancelGroupTest";
 	dataToSend.data = {"player":playerId};
-	for(otherPlayer in otherPlayers) {
+	for(var otherPlayer in otherPlayers) {
 		app_server.sendMsgToClient(otherPlayer, dataToSend);
 		delete groupTestTmp[otherPlayer];
 	}
