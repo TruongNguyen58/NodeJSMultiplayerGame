@@ -351,7 +351,7 @@ game_server.startGroupTest = function(gameId, obj) {
 	games[gameId].finishPlayers = {};
 	setTimeout(
 			function() {
-				recordIntervals[gameId] = startGroupTestTimer(gameId, timeToEndGame);
+				recordIntervals[gameId] = startGroupTestTimer(gameId, timeToEndGame/2);
 			}, 3 * 1000);
 	//}
 }; //game_server.startGroupTest
