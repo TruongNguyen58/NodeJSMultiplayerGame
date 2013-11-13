@@ -145,10 +145,10 @@ game_server.onUserDisconnect = function(sId) {
 							+ " Disconnect game");
 			console.log("currentGameOfPlayer: "
 					+ JSON.stringify(currentGameOfPlayer));
+			var playerId = socketsOfClients[sId];
 			if (currentGameOfPlayer.hasOwnProperty(socketsOfClients[sId])) {
 				var gameId = currentGameOfPlayer[socketsOfClients[sId]];
 				var data = {};
-				var playerId = socketsOfClients[sId];
 				data.player =  {"playerId" : playerId, "playerName" :players[playerId].playerName};
 				if(games[gameId].gameRule == 1){
 					for ( var i = 0; i < games[gameId].scores.length; i++) {
@@ -186,6 +186,7 @@ game_server.onUserDisconnect = function(sId) {
 			}
 			console.log("Grouptest keys: " + JSON.stringify(groupTestKeys));
 			if (groupTestKeys.hasOwnProperty(playerId)) {
+				console.log(playerId +  " Cancel group grest " + JSON.stringify( groupTestKeys[playerId]) );
 				cancelGroupTest(playerId, groupTestKeys[playerId]);
 			}
 			delete players[socketsOfClients[sId]];
