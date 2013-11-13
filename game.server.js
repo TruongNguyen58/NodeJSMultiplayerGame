@@ -100,10 +100,10 @@ function onUserConnect(sId, playerData) {
 					if (currentGameOfPlayer.hasOwnProperty(playerId)) {
 							delete currentGameOfPlayer[playerId];
 					}
-					if (groupTestKeys.hasOwnProperty(playerId)) {
-						cancelGroupTest(playerId, groupTestKeys[playerId]);
-					}
 				}
+			}
+			if (groupTestKeys.hasOwnProperty(playerId)) {
+				cancelGroupTest(playerId, groupTestKeys[playerId]);
 			}
 		} catch (err) {
 		}
@@ -173,10 +173,6 @@ game_server.onUserDisconnect = function(sId) {
 					if (currentGameOfPlayer.hasOwnProperty(playerId)) {
 						delete currentGameOfPlayer[playerId];
 					}
-					console.log("Grouptest keys: " + JSON.stringify(groupTestKeys));
-					if (groupTestKeys.hasOwnProperty(playerId)) {
-						cancelGroupTest(playerId, groupTestKeys[playerId]);
-					}
 				}
 					
 			}
@@ -187,6 +183,10 @@ game_server.onUserDisconnect = function(sId) {
 				obj.player = socketsOfClients[sId];
 				console.log("object: " + JSON.stringify(obj));
 				onExitWaitingGame(sId, obj);
+			}
+			console.log("Grouptest keys: " + JSON.stringify(groupTestKeys));
+			if (groupTestKeys.hasOwnProperty(playerId)) {
+				cancelGroupTest(playerId, groupTestKeys[playerId]);
 			}
 			delete players[socketsOfClients[sId]];
 			delete clients[socketsOfClients[sId]];
