@@ -465,10 +465,9 @@ function endGroupTest(gameId) {
 		var dataToSend = {};
 		dataToSend.notice = "endGroupTest";
 		dataToSend.data = {};
-		
-		sendMessageToAll(games[gameId], dataToSend);
 		setTimeout(function() {
 			try {
+				sendMessageToAll(games[gameId], dataToSend);
 				delete recordIntervals[gameId];
 				delete numberOfPlayerAnswer[gameId];
 				console.log(JSON.stringify(games));
