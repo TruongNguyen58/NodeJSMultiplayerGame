@@ -304,7 +304,7 @@ game_server.findPlayer = function(obj) {
 						
 				});
 	console.log("dataToSend: " + JSON.stringify(dataToSend));
-	if(dataToSend.data typeof undefined) {
+	if(typeof dataToSend.data === undefined) {
 		dataToSend.data = {
 			"player" :  {},
 			"available" : false
