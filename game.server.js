@@ -292,7 +292,7 @@ game_server.findPlayer = function(obj) {
 	var playerId = obj.player;
 	Object.keys(players).forEach(
 				function(playerId) {
-					console.log("PlayerId: " + playerId);
+					console.log("Player: " + JSON.stringify(players[playerId]);
 					if (players[playerId].playerName == obj.player
 							&& players[playerId].status == 1){
 						dataToSend.data = {
