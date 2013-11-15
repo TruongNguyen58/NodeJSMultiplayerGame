@@ -290,26 +290,26 @@ game_server.findPlayer = function(obj) {
 	dataToSend.notice = TYPE_FOUND_PLAYER;
 	console.log('looking for a player for user: ' + obj.sender);
 	var playerId = obj.player;
-	if (players.hasOwnProperty(playerId)) {
-		if (playerId != obj.sender && players[playerId].status == 1) {
-			dataToSend.data = {
-				"player" : players[playerId],
-				"available" : true
-			};
-			console.log('found user: ' + JSON.stringify(playerName));
-		} else {
-			dataToSend.data = {
-				"player" :  players[playerId],
-				"available" : false
-			};
-			console.log('player:' + JSON.stringify(playerName)+ " not available");
-		}
-	} else {
+	Object.keys(players).forEach(
+				function(playerId) {
+					console.log("PlayerId: " + playerId);
+					if (players[playerId].playerName == obj.player
+							&& players[playerId].status == 1){
+						dataToSend.data = {
+							"player" : players[playerId],
+							"available" : true
+						};
+						console.log('found user: ' + JSON.stringify(playerName));
+					}
+						
+				});
+	console.log("dataToSend: " + JSON.stringify(dataToSend));
+	if(dataToSend.data typeof undefined) {
 		dataToSend.data = {
-			"player" :  {"playerId" : playerId, "playerName" :""},
+			"player" :  {},
 			"available" : false
 		};
-		console.log('not found user: ' + JSON.stringify(playerName));
+		console.log('player:' + JSON.stringify(playerName)+ " not available");
 	}
 	sendMessageToPlayer(clients[obj.sender], dataToSend);
 }; //game_server.findPlayer
