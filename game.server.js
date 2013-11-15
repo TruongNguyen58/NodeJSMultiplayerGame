@@ -294,11 +294,11 @@ game_server.findPlayer = function(obj) {
 					console.log("Player: " + JSON.stringify(players[playerId]));
 					if (players[playerId].playerName == obj.player
 							&& players[playerId].status == 1){
+						console.log('found user: ' + JSON.stringify(players[playerId]));
 						dataToSend.data = {
 							"player" : players[playerId],
 							"available" : true
 						};
-						console.log('found user: ' + JSON.stringify(playerName));
 					}
 						
 				});
@@ -392,7 +392,7 @@ game_server.startGroupTest = function(gameId, obj) {
 	}
 	if (recordIntervals.hasOwnProperty(gameId)) {
 		try {
-			clearTimeout(recordIntervals[gameId]);
+			clearTimer(recordIntervals[gameId]);
 			delete recordIntervals[gameId];
 		} catch (err) {
 			console.log("Err: " + JSON.stringify(err));
@@ -447,7 +447,7 @@ function startGroupTestTimer(gameId, timeToEndGame) {
 		var start_time = new Date();
 		var interval = setTimeout(function() {
 			try {
-				clearTimeout(interval);
+				clearTimer(interval);
 				console.log("End group test");
 				endGroupTest(gameId);
 			} catch (err) {
@@ -460,7 +460,7 @@ function startGroupTestTimer(gameId, timeToEndGame) {
 function endGroupTest(gameId) {
 	if (games.hasOwnProperty(gameId)) {
 		console.log("end Group Test! zzzzzzzzzzzzzzzzz: "+ JSON.stringify(games[gameId]));
-		clearTimeout(recordIntervals[gameId]);
+		clearTimer(recordIntervals[gameId]);
 		var dataToSend = {};
 		dataToSend.notice = "endGroupTest";
 		dataToSend.data = {};
@@ -510,7 +510,7 @@ game_server.startGame = function(gameId, obj) {
 	games[gameId].passedRound = {};
 	if (recordIntervals.hasOwnProperty(gameId)) {
 		try {
-			clearTimeout(recordIntervals[gameId]);
+			clearTimer(recordIntervals[gameId]);
 			delete recordIntervals[gameId];
 		} catch (err) {
 			console.log("Err: " + JSON.stringify(err));
@@ -528,7 +528,7 @@ game_server.startGame = function(gameId, obj) {
 			function() {
 				recordIntervals[gameId] = startIntervalTimer(gameId,
 						games[gameId].intervalTime);
-			}, 3 * 1000);
+			}, 500);
 	//}
 }; //game_server.startGame
 
@@ -577,7 +577,8 @@ function onQuizAnswer(obj) {
 			console.log("Player length: " + Object.size(games[gameId].clientPlayers));
 			if (games[gameId].passedRound[round] == false
 					&& (obj.result == 'true' || numberOfPlayerAnswer[gameId] >= Object.size(games[gameId].clientPlayers))) {
-				clearTimeout(recordIntervals[gameId]);
+				console.log("Type of recordIntervals[gameId]: " + typeof recordIntervals[gameId]);
+				clearTimer(recordIntervals[gameId]);
 				games[gameId].passedRound[round] = true;
 				//gameRounds[gameId] = gameRounds[gameId] - 1;
 				games[gameId].currRound = games[gameId].currRound + 1;
@@ -633,7 +634,7 @@ function onMatchingAnswer(obj) {
 					});
 			if (games[gameId].passedRound[round] == false) {
 				//Next round
-				clearTimeout(recordIntervals[gameId]);
+				clearTimer(recordIntervals[gameId]);
 				games[gameId].passedRound[round] = true;
 				games[gameId].currRound = games[gameId].currRound + 1;
 				if (games[gameId].currRound < games[gameId].roundNum) {
@@ -666,7 +667,7 @@ game_server.onReceiveRqEndGame = function(obj) {
 	console.log("Game with id: " + gameId + " receive request to end!");
 	console.log("Current Games: " + JSON.stringify(games));
 	if (games.hasOwnProperty(gameId)) {
-		clearTimeout(recordIntervals[gameId]);
+		clearTimer(recordIntervals[gameId]);
 		endgame(gameId);
 	}
 }; //game_server.onPlayerAnswer
@@ -691,23 +692,21 @@ function is_empty(obj) {
 
 function startIntervalTimer(gameId, timerInterval) {
 	if (games.hasOwnProperty(gameId)) {
-		var start_time = new Date();
-		var count = 1;
 		var interval = setTimeout(function() {
 			try {
 				games[gameId].currRound = games[gameId].currRound + 1;
 				if (games[gameId].currRound < games[gameId].roundNum) {
-					var end_time = new Date();
-					var dif = end_time.getTime() - start_time.getTime();
-					console.log("Tick no. " + count + " after "+ Math.round(dif / 1000) + " seconds");
+					console.log("Tick xxxxxx yyyyyy zzzzzzz");
 					numberOfPlayerAnswer[gameId] = 0;
 					sendRequestNextRoundToAll(games[gameId]);
-					count++;
-					delete recordIntervals[gameId];
+					if(typeof recordIntervals[gameId] != undefined){
+						clearTimer(recordIntervals[gameId]);
+						delete recordIntervals[gameId];
+					}
 					recordIntervals[gameId] = startIntervalTimer(gameId,
 							timerInterval);
 				} else {
-					clearTimeout(interval);
+					clearTimer(interval);
 					endgame(gameId);
 				}
 			} catch (err) {
@@ -718,7 +717,7 @@ function startIntervalTimer(gameId, timerInterval) {
 }
 
 function endWhenPlayerQuitGame(gameId, notice, data) {
-	clearTimeout(recordIntervals[gameId]);
+	clearTimer(recordIntervals[gameId]);
 	if (games.hasOwnProperty(gameId)) {
 		console.log("End game! zzzzzzzzzzzzzzzzz: "+ JSON.stringify(games[gameId]));
 		var dataToSend = {};
@@ -826,3 +825,14 @@ Object.size = function(obj) {
     }
     return size;
 };
+
+function clearTimer(timer) {
+	try{
+		console.log("Clear time out here: " + JSON.stringify(timer));
+	}
+	catch (err) {
+		console.log("Clear timer " + typeof timer);
+	}
+	
+	clearTimeout(timer);
+}
