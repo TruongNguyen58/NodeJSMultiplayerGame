@@ -288,8 +288,7 @@ game_server.findPlayer = function(obj) {
 	console.log("findPlayer : " + JSON.stringify(obj));
 	var dataToSend = {};
 	dataToSend.notice = TYPE_FOUND_PLAYER;
-	console.log('looking for a player for user: ' + obj.sender);
-	var playerId = obj.player;
+	console.log('looking for player' + obj.player +' for user: ' + obj.sender);
 	Object.keys(players).forEach(
 				function(playerId) {
 					console.log("Player: " + JSON.stringify(players[playerId]));
