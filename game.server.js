@@ -106,6 +106,13 @@ function onUserConnect(sId, playerData) {
 			if (groupTestKeys.hasOwnProperty(playerId)) {
 				cancelGroupTest(playerId, groupTestKeys[playerId]);
 			}
+			if(groupTestTmp.hasOwnProperty(playerId)){
+				var obj = {};
+				obj.sender = groupTestTmp[playerId];
+				obj.player = playerId;
+				console.log("object: " + JSON.stringify(obj));
+				onExitWaitingGame(sId, obj);
+			}
 		} catch (err) {
 		}
 		delete players[playerId];
@@ -181,10 +188,10 @@ game_server.onUserDisconnect = function(sId) {
 					
 			}
 			console.log("groupTestTmp: " +JSON.stringify(groupTestTmp));
-			if(groupTestTmp.hasOwnProperty(sId)){
+			if(groupTestTmp.hasOwnProperty(playerId)){
 				var obj = {};
-				obj.sender = groupTestTmp[sId];
-				obj.player = socketsOfClients[sId];
+				obj.sender = groupTestTmp[playerId];
+				obj.player = playerId;
 				console.log("object: " + JSON.stringify(obj));
 				onExitWaitingGame(sId, obj);
 			}
@@ -208,7 +215,8 @@ function cancelGroupTest (playerId, otherPlayers) {
 	dataToSend.notice = "cancelGroupTest";
 	dataToSend.data = {"player":playerId};
 	for (var i=0;i<otherPlayers.length;i++){ 
-		sendMessageToPlayer(otherPlayers[i], dataToSend);
+		sendMessageToPlayer(socketsOfClients[otherPlayers[i]], dataToSend);
+		//TODO 
 		delete groupTestTmp[otherPlayers[i]];
 	}
 	delete groupTestKeys[playerId];
@@ -353,11 +361,11 @@ game_server.confirmJoinGame = function(sId, obj) {
 	var dataToSend = {};
 	console.log('send confirm to sender: ' + obj.sender);
 	if(obj.gameRule == 2) {
-		groupTestTmp[sId] = obj.sender;
+		groupTestTmp[obj.player] = obj.sender;
 		if(!groupTestKeys.hasOwnProperty(obj.sender)) {
 			groupTestKeys[obj.sender] = new Array();
 		}
-		groupTestKeys[obj.sender].push(sId);
+		groupTestKeys[obj.sender].push(obj.player);
 	}
 	dataToSend.notice = "receiveConfirm"
 	dataToSend.data = obj;
@@ -365,11 +373,6 @@ game_server.confirmJoinGame = function(sId, obj) {
 }; //game_server.confirmJoinGame
 
 game_server.startGroupTest = function(gameId, obj) {
-	try{
-		delete groupTestKeys[socketsOfClients[gameId]];
-	}
-	catch (err) {
-	}
 	console.log("JSON.stringify(obj.game) :        " + JSON.stringify(obj.game));
 	var gameToSave = obj.game;
 	var dataToSend = {};
@@ -385,7 +388,7 @@ game_server.startGroupTest = function(gameId, obj) {
 					players[playerId].status = 2;
 					currentGameOfPlayer[playerId] = gameId;
 					sendMessageToPlayer(clients[playerId], dataToSend);
-					delete groupTestTmp[clients[playerId]];
+					delete groupTestTmp[playerId];
 				});
 	} catch (err) {
 		console.log("Err: " + JSON.stringify(err));
@@ -415,16 +418,33 @@ game_server.exitWaitingGame = function(sId, obj) {
 
 function onExitWaitingGame (sId, obj) {
 	console.log("On user exit waiting game: " + JSON.stringify(obj));
-	var dataToSend = {};
-	dataToSend.notice = "exitWaitingGame";
-	dataToSend.data = {"player":obj.player};
-	sendMessageToPlayer(clients[obj.sender], dataToSend);
-	delete groupTestTmp[clients[obj.player]];
 	try{
-		var index = groupTestKeys[obj.sender].indexOf(sId);
+		var index = groupTestKeys[obj.sender].indexOf(obj.player);
 		if (index > -1) {
-	    	groupTestKeys[obj.sender].splice(index, 1);
+			groupTestKeys[obj.sender].splice(index, 1);
+			if(!games.hasOwnProperty(socketsOfClients[obj.sender])){
+				var dataToSend = {};
+				dataToSend.notice = "exitWaitingGame";
+				dataToSend.data = {"player":obj.player};
+				sendMessageToPlayer(clients[obj.sender], dataToSend);
+			}
+			else {
+				var gameId = socketsOfClients[obj.sender];
+				if(games[gameId].finishPlayers[obj.player] != true){
+					console.log("delete games[gameId].clientPlayers[playerId]: " + obj.player);
+					delete games[gameId].clientPlayers[obj.player];
+					console.log("Size remain: " + Object.size(games[gameId].clientPlayers));
+				}
+					
+				if(Object.size(games[gameId].clientPlayers) <= 1 || games[gameId].finish >= Object.size(games[gameId].clientPlayers)) {
+					endGroupTest(gameId);
+				}
+				if (currentGameOfPlayer.hasOwnProperty(obj.player)) {
+					delete currentGameOfPlayer[obj.player];
+				}
+			}
 		}
+		delete groupTestTmp[obj.player];
 	}
 	catch (err) {
 	}
@@ -478,6 +498,11 @@ function endGroupTest(gameId) {
 							if (players[playerId].status == 2)
 								players[playerId].status = 1;
 						});
+				try{
+					delete groupTestKeys[socketsOfClients[gameId]];
+				}
+				catch (err) {
+				}
 				delete games[gameId];
 			} catch (err) {
 				console.log("Error when delete data to endGame: "+ JSON.stringify(err));
