@@ -618,8 +618,14 @@ function onQuizAnswer(obj) {
 						if (recordIntervals.hasOwnProperty(gameId)) {
 							delete recordIntervals[gameId];
 						}
-						recordIntervals[gameId] = startIntervalTimer(gameId,
+						try{
+							recordIntervals[gameId] = startIntervalTimer(gameId,
 								games[gameId].intervalTime);
+						}
+						catch{
+							
+						}
+						
 					}, 2 * 1000);
 				} else {
 					setTimeout(function() {
