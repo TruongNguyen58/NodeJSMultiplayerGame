@@ -249,7 +249,7 @@ game_server.onUserQuitGame = function(sId) {
 						players[playerId].status = 1;
 					delete games[gameId].clientPlayers[playerId];
 					console.log("games[gameId].clientPlayers: " + JSON.stringify(games[gameId].clientPlayers));
-					if(Object.size(games[gameId].clientPlayers) <= 1) {
+					if(Object.size(games[gameId].clientPlayers) <= 1 || games[gameId].finish >= Object.size(games[gameId].clientPlayers)) {
 						endGroupTest(gameId);
 					}
 				}
