@@ -807,10 +807,16 @@ function sendRequestNextRoundToAll(game) {
 	if (typeof game != undefined) {
 		var dataToSend = {};
 		dataToSend.notice = "nextRound";
-		dataToSend.data = {
-			"round" : game.currRound,
-			"scores" : game.scores
-		};
+		try{
+			dataToSend.data = {
+				"round" : game.currRound,
+				"scores" : game.scores
+			};
+		}
+		catch(err) {
+			dataToSend.data = {};
+		}
+		
 		sendMessageToAll(game, dataToSend);
 		console.log("game saved: " + JSON.stringify(game));
 	}
