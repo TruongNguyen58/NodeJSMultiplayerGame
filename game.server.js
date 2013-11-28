@@ -622,8 +622,8 @@ function onQuizAnswer(obj) {
 							recordIntervals[gameId] = startIntervalTimer(gameId,
 								games[gameId].intervalTime);
 						}
-						catch{
-							
+						catch(err){
+
 						}
 						
 					}, 2 * 1000);
