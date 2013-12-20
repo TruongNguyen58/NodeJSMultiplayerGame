@@ -272,8 +272,9 @@ game_server.getAvailablePlayers = function(sId, obj) {
 		Object.keys(players).forEach(
 				function(playerId) {
 					console.log("PlayerId: " + playerId);
-					if ((obj.appName == 'superflashcard' || players[playerId].appName == obj.appName)
-							&& players[playerId].status == 1)
+					// if ((obj.appName == 'superflashcard' || players[playerId].appName == obj.appName)
+					// 		&& players[playerId].status == 1)
+					if (players[playerId].status == 1)
 						if (i <= 100) {
 							availableUsers.push(players[playerId]);
 						}
