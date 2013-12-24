@@ -570,13 +570,14 @@ function onQuizAnswer(obj) {
 	var round = obj.round;
 	if (games.hasOwnProperty(gameId) && (games[gameId].currRound == round)) {
 		console.log("games.hasOwnProperty(gameId) && (games.currRound === round)");
+		numberOfPlayerAnswer[gameId] = numberOfPlayerAnswer[gameId] + 1;
 		if (games[gameId].passedRound[round] != true) // undefined or false
 			games[gameId].passedRound[round] = false;
 		try {
 			for ( var i = 0; i < games[gameId].scores.length; i++) {
 				var playerScore = games[gameId].scores[i];
 				if (playerScore.hasOwnProperty(obj.playerAnswer)) {
-					if (obj.result == 'true')
+					if (obj.result != 'false')
 						playerScore[obj.playerAnswer] = playerScore[obj.playerAnswer] + 1;
 					else
 						playerScore[obj.playerAnswer] = playerScore[obj.playerAnswer] - 1;
@@ -593,7 +594,7 @@ function onQuizAnswer(obj) {
 					});
 			console.log("Player length: " + Object.size(games[gameId].clientPlayers));
 			if (games[gameId].passedRound[round] == false
-					&& (obj.result == 'true' || numberOfPlayerAnswer[gameId] >= Object.size(games[gameId].clientPlayers))) {
+					&& (obj.result != 'false' || numberOfPlayerAnswer[gameId] >= Object.size(games[gameId].clientPlayers))) {
 				console.log("Type of recordIntervals[gameId]: " + typeof recordIntervals[gameId]);
 				clearTimer(recordIntervals[gameId]);
 				games[gameId].passedRound[round] = true;
