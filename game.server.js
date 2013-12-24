@@ -561,13 +561,7 @@ game_server.startGame = function(gameId, obj) {
 
 game_server.onPlayerAnswer = function(obj) {
 	var gameId = obj.gameId;
-	if (games.hasOwnProperty(gameId)) {
-		if (games[gameId].gameType == 4 || games[gameId].gameType == 5) {
-			onQuizAnswer(obj);
-		} else if (games[gameId].gameType == 2 || games[gameId].gameType == 3) {
-			onMatchingAnswer(obj);
-		}
-	}
+	onQuizAnswer(obj);
 
 }; //game_server.onPlayerAnswer
 
@@ -576,10 +570,6 @@ function onQuizAnswer(obj) {
 	var round = obj.round;
 	if (games.hasOwnProperty(gameId) && (games[gameId].currRound == round)) {
 		console.log("games.hasOwnProperty(gameId) && (games.currRound === round)");
-		//var dataToSend = {};
-		numberOfPlayerAnswer[gameId] = numberOfPlayerAnswer[gameId] + 1;
-		console.log(gameId + " --- " + obj.questionId + " ----- " + obj.result+ " \\\\\ " + JSON.stringify(numberOfPlayerAnswer));
-		console.log("Found game: " + JSON.stringify(games[gameId]));
 		if (games[gameId].passedRound[round] != true) // undefined or false
 			games[gameId].passedRound[round] = false;
 		try {
