@@ -315,6 +315,7 @@ game_server.findPlayer = function(obj) {
 					}
 					catch(err) {
 						console.log("Player: " + playerId + JSON.stringify(players));
+						return true;
 					}						
 				});
 	console.log("dataToSend: " + JSON.stringify(dataToSend));
