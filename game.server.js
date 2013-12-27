@@ -300,16 +300,18 @@ game_server.findPlayer = function(obj) {
 	var dataToSend = {};
 	dataToSend.notice = TYPE_FOUND_PLAYER;
 	console.log('looking for player' + obj.player +' for user: ' + obj.sender);
-	Object.keys(players).forEach(
+	Object.keys(players).every(
 				function(playerId) {
 					console.log("Player: " + JSON.stringify(players[playerId]));
-					if (players[playerId].playerName.toLowerCase() == obj.player.toLowerCase()){
+					if (playerId != null && players[playerId].playerName.toLowerCase() == obj.player.toLowerCase()){
 						console.log('found user: ' + JSON.stringify(players[playerId]));
 						dataToSend.data = {
 							"player" : players[playerId],
 							"available" : true
 						};
+						return false;
 					}
+					return true;
 						
 				});
 	console.log("dataToSend: " + JSON.stringify(dataToSend));
