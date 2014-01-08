@@ -583,10 +583,10 @@ function onQuizAnswer(obj) {
 			for ( var i = 0; i < games[gameId].scores.length; i++) {
 				var playerScore = games[gameId].scores[i];
 				if (playerScore.hasOwnProperty(obj.playerAnswer)) {
-					if (obj.result != 'false')
-						playerScore[obj.playerAnswer] = playerScore[obj.playerAnswer] + 1;
-					else
-						playerScore[obj.playerAnswer] = playerScore[obj.playerAnswer] - 1;
+					// if (obj.result != 'false')
+						playerScore[obj.playerAnswer] = obj.score;
+					// else
+					// 	playerScore[obj.playerAnswer] = playerScore[obj.playerAnswer] - 1;
 				}
 			}
 			Object.keys(games[gameId].clientPlayers).forEach(
@@ -649,7 +649,7 @@ function onMatchingAnswer(obj) {
 			for ( var i = 0; i < games[gameId].scores.length; i++) {
 				var playerScore = games[gameId].scores[i];
 				if (playerScore.hasOwnProperty(obj.playerAnswer)) {
-					playerScore[obj.playerAnswer] = playerScore[obj.playerAnswer] + 1;
+					playerScore[obj.playerAnswer] = obj.score;
 				}
 			}
 			Object.keys(games[gameId].clientPlayers).forEach(
