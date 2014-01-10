@@ -411,12 +411,17 @@ game_server.startGroupTest = function(gameId, obj) {
 		}
 	}
 	//console.log("game saved with: " + JSON.stringify(games[gameId]));
-	var timeToEndGame = games[gameId].roundNum * games[gameId].intervalTime;
+	var timeToEndGame = 0;// = games[gameId].roundNum * games[gameId].intervalTime;
+	Object.keys(games[gameId].intervalTime).forEach(
+				function(round) {
+					timeToEndGame += games[gameId].intervalTime[round];
+				});
+	console.log("Time to end group test: " + timeToEndGame);
 	games[gameId].finish  = 0;
 	games[gameId].finishPlayers = {};
 	setTimeout(
 			function() {
-				recordIntervals[gameId] = startGroupTestTimer(gameId, timeToEndGame/2);
+				recordIntervals[gameId] = startGroupTestTimer(gameId, timeToEndGame);
 			}, 3 * 1000);
 	//}
 }; //game_server.startGroupTest
