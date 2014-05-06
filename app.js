@@ -57,14 +57,17 @@ app.get('/users', function(req, res) {
 app.get('/ping', function(req, res) {
 	res.send('pong');
 });
+app.get('/checkonline', function(req, res) {
+	game_server.checkonline(req, res);
+});
 
-// var server = app.listen(app.get('port'), function() {
-// 	console.log("Express server listening on port " + app.get('port'));
-// });
+var server = app.listen(app.get('port'), function() {
+	log("Express server listening on port " + app.get('port'));
+});
 
-var server = https.createServer(sslOptions,app).listen(app.get('port'), function(){
-  console.log("Secure Express server listening on port " + app.get('port'));
-});  
+// var server = https.createServer(sslOptions,app).listen(app.get('port'), function(){
+//   log("Secure Express server listening on port " + app.get('port'));
+// });  
 
 var io = socketio.listen(server, {
 	origins : '*:*'
@@ -79,13 +82,13 @@ io.configure('development', function() {
 
 io.sockets.on('connection', function(socket) {
 	socket.on('setusername', function(data) {
-		console.log("CLIENT:" + socket.id + " CONNECTED TO SERVER");
+		log("CLIENT:" + socket.id + " CONNECTED TO SERVER");
 		game_server.setUser(socket.id, data);
 	});
 
 	socket.on('request', function(msg) {
 		var obj = JSON.parse(msg);
-		// console.log("Receive request from cilent: " +msg);
+		// log("Receive request from cilent: " +msg);
 		try {
 			if (obj.type == "chat") {
 				game_server.chat(obj);
@@ -119,7 +122,7 @@ io.sockets.on('connection', function(socket) {
 				socket.onDisconnect();
 			}
 		} catch (err) {
-			console.log("Errororororororororororor");
+			log("Errororororororororororor");
 		}
 
 	});
@@ -130,23 +133,19 @@ io.sockets.on('connection', function(socket) {
 
 app_server.sendMsgToClient = function(sId, msg) {
 	io.sockets.sockets[sId].emit('message', msg);
-	// try {
-	// 	// console.log("sendMsgToClient: " + sId + " with msg: " + JSON.stringify(msg));
-	// 	io.sockets.sockets[sId].emit('message', msg);
-	// } catch (err) {
-	// 	console.log("Error: " + JSON.stringify(err));
-	// }
-
 };
 
 app_server.sendToClient = function(sId, notice, msg) {
 	try {
-		// console.log("sendMsgToClient: " + sId + " with msg: " + JSON.stringify(msg));
+		// log("sendMsgToClient: " + sId + " with msg: " + JSON.stringify(msg));
 		io.sockets.sockets[sId].emit(notice, msg);
 	} catch (err) {
-		console.log("Error: " + JSON.stringify(err));
+		log("Error: " + JSON.stringify(err));
 	}
 
 };
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
+function log(msg) {
+	//log(msg);
+} 
